@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -90,6 +91,8 @@ public class ViewAddActivity extends AppCompatActivity {
             actionbar.setDisplayHomeAsUpEnabled(true);
             //actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
         title = findViewById(R.id.title);
         speciality = findViewById(R.id.speciality);
         variety = findViewById(R.id.variety);
@@ -353,6 +356,9 @@ public class ViewAddActivity extends AppCompatActivity {
         }
     }
     private void shareIt() {
+
+//        Uri uri=null;
+//        if(BuildConfig.VERSION_CODE==Build.)
         Uri uri = Uri.fromFile(imagePath);
 //        Uri uri = FileProvider.getUriForFile(ViewAddActivity.this, BuildConfig.APPLICATION_ID + ".provider",imagePath);
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
