@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <TextView
+        android:id="@+id/textView8"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/title_select_language" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/marathi"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:elevation="5dp"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardCornerRadius="10dp">
+
+            <TextView
+                android:id="@+id/textView9"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorTeal"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center"
+                android:text="@string/action_marathi"
+                android:textColor="@color/colorOffWhite"
+                android:textSize="20sp" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/hindi"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:elevation="5dp"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardCornerRadius="10dp">
+
+            <TextView
+                android:id="@+id/textView12"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorMagenta"
+                android:gravity="center"
+                android:text="@string/action_hindi"
+                android:textColor="@color/colorOffWhite"
+                android:textSize="20sp" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/gujrati"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:elevation="5dp"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardCornerRadius="10dp">
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorYellow"
+                android:fontFamily="sans-serif-thin"
+                android:gravity="center"
+                android:text="@string/action_gujrati"
+                android:textColor="@color/colorOffWhite"
+                android:textSize="20sp" />
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/english"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_weight="1"
+            android:clickable="true"
+            android:elevation="5dp"
+            android:foreground="?attr/selectableItemBackground"
+            app:cardCornerRadius="10dp">
+
+            <TextView
+                android:id="@+id/textView10"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/colorPink"
+                android:gravity="center"
+                android:text="@string/action_english"
+                android:textColor="@color/colorOffWhite"
+                android:textSize="20sp" />
+        </androidx.cardview.widget.CardView>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/skip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_margin="8dp"
+        android:layout_marginTop="12dp"
+        android:padding="12dp"
+        android:paddingLeft="16dp"
+        android:text="@string/action_skip"
+        android:drawableRight="@drawable/ic_baseline_double_arrow_24" />
+
+
+</LinearLayout>

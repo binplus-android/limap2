@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.limap">
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature android:name="android.hardware.camera.flash" />
+
+    <application
+        android:name=".Global"
+        android:allowBackup="false"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
+        tools:replace="android:allowBackup">
+        <uses-library
+            android:name="com.google.android.maps"
+            android:required="true" />
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyByIRgm9LNeWaFmwgA3Yzwsj9KSL1yMbN8" />
+
+        <activity android:name=".Activity.SplashActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Activity.LanguageActivity"
+            android:label="@string/title_activity_language"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".Activity.CheckAccountActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.CheckPostActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.OTPActivity"
+            android:label="Registration"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.OTPVerifyActivity"
+            android:label="Verify OTP"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.ProfileActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.ProfileEditActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.PostAdvertisementActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.UploadPhotosActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.ViewAddActivity"
+            android:label="@string/title_activity_main"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Activity.CategoryActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".Activity.VideoActivity"
+            android:label="@string/title_activity_main" />
+        <activity
+        android:name=".Activity.MyPostAdvertisementActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".Activity.DoctorListActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".Activity.MyFavoriteActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".Activity.PhotoActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".Activity.SearchActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_activity_main" />
+        <activity
+            android:name=".Activity.SearchDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:label="@string/title_activity_main" />
+<!--
+        <activity
+            android:name=".Activity.MyProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:parentActivityName=".Activity.MRDNoActivity"
+            android:screenOrientation="unspecified">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Activity.MyProfileActivity" />
+        </activity> -->
+
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.limap.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider> <!-- End File provider -->
+
+        <receiver
+            android:name=".Utils.SmsBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true" />
+    </application>
+
+</manifest>

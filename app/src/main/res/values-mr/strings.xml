@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LIMAP</string>
+    <string name="title_developer">GODARIO TECHNOLOGIES</string>
+    <string name="title_activity_registration">Edit Profile</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+
+    <string name="preference_file_key">com.limap.preference</string>
+
+    <string name="action_settings">सेटीन्ग्स </string>
+    <string name="label_registration">Fill profile to post add or add to favorite.</string>
+    <string name="hint_mobile">मोबाइल नं. (ID)</string>
+    <string name="otp">ओटीपी टाका </string>
+    <string name="hint_fullname"> पूर्ण नाव </string>
+    <string name="hint_email">ई-मेल </string>
+    <string name="hint_nickname">Nickname / Username</string>
+    <string name="action_save_profile">Save Profile</string>
+    <string name="label_note">Note: User needs to get verified by administrator withing 24 hour, User once verified can use the app premium functionalities.</string>
+    <string name="note_agreement">By registering i m agree with the \n<a href="#">Terms &amp; Condition</a> and \n<a href="#">Privacy Policy</a></string>
+    <string name="title_doctor">तुम्ही पशूंचे डॉक्टर अहात का ?</string>
+    <string name="note_doctor">You will get unique referral code to get referral amount on each completed deals.</string>
+    <string name="title_seller">विक्रेता </string>
+    <string name="title_buyer"> खरीददार </string>
+    <string name="title_doctor2">पशु डॉक्टर </string>
+    <string name="hint_address">पत्ता </string>
+    <string name="hint_village">गाव / City</string>
+    <string name="hint_taluka">तालुका </string>
+    <string name="hint_district">जिल्हा </string>
+    <string name="hint_state">राज्य </string>
+    <string name="title_activity_main">LIMAP</string>
+    <string name="title_home">HOME</string>
+    <string name="title_sell">Sell</string>
+    <string name="title_adds">MY POSTS</string>
+    <string name="title_favorite">FAVOURITE</string>
+    <string name="title_account">ACCOUNT</string>
+    <string name="label_sell">Fill out the below information to post your add.</string>
+    <string name="label_search">Fill out the below information to search post.</string>
+    <string name="hint_add_title">Add Title</string>
+    <string name="hint_add_description">Add description in brief.</string>
+    <string name="title_activity_post_add">Post Advertisement</string>
+    <string name="hint_price">Price</string>
+    <string name="action_next">NEXT</string>
+    <string name="action_otp">GET OTP</string>
+    <string name="action_verify_otp">VERIFY OTP</string>
+    <string name="title_activity_upload_photos">Upload Photos</string>
+    <string name="title_profile_name">Profile Name</string>
+    <string name="action_edit_profile">Edit Profile</string>
+    <string name="hint_add_location">Add Service Location</string>
+    <string name="hint_add_serving_location">Serving Villages</string>
+    <string name="title_location">Location</string>
+    <string name="note_location">List of service locations</string>
+    <string name="title_enquiry_order">My Enquiries / Orders</string>
+    <string name="title_cow">गाय</string>
+    <string name="title_buffalo">म्हैस </string>
+    <string name="title_ox">बैल </string>
+    <string name="option_gabhan">गाभण </string>
+    <string name="option_dubhti">दुभती </string>
+    <string name="option_vasaru">वासरू </string>
+    <string name="title_category">कॅटेगरी निवडा</string>
+    <string name="title_speciality">स्पेशालिटी निवडा </string>
+    <string name="hint_variety">जात  </string>
+    <string name="title_variety">जात निवडा </string>
+    <string name="hint_age_cowbuffalo">वय </string>
+    <string name="hint_age_ox">Age/दात </string>
+    <string name="hint_vet">वेत</string>
+    <string name="hint_preg">गाभण (महिना)</string>
+    <string name="hint_milk_history">शेवटच्या वेताचे दूध - लिटर </string>
+    <string name="title_ltr">लिटर </string>
+    <string name="title_photo_upload">Click to browse or capture photos/video</string>
+    <string name="title_photo_seller">विक्रेते सोबत फोटो </string>
+    <string name="title_photo_left">डावी कडून फोटो </string>
+    <string name="title_photo_right">उजवी कडून फोटो </string>
+    <string name="title_photo_back">Photo from back</string>
+    <string name="title_photo_certificate">Dr Certificate/Card</string>
+    <string name="title_video">Short Video</string>
+    <string name="title_video_validate">Please upload Video upto 10Mb size </string>
+    <string name="title_photo_other">Other</string>
+    <string name="action_post_add">Post Advertisement</string>
+    <string name="title_photo">Item Photo</string>
+    <string name="title_title">Title</string>
+    <string name="title_description">Description</string>
+    <string name="title_activity_view_add">View Advertisement</string>
+
+    <string name="title_filter_category">FILTER CATEGORY</string>
+    <string name="title_selected_category">CATEGORY</string>
+    <string name="title_selected_speciality">Speciality</string>
+
+    <string-array name="array_variety_cowox">
+        <item>जर्सी</item>
+        <item>होलस्टिन फ्रिजियन</item>
+        <item>खिल्लारी</item>
+        <item>गीर</item>
+        <item>डांगी</item>
+        <item>देवणी</item>
+        <item>सिंधी</item>
+    </string-array>
+
+    <string-array name="array_variety_buffalo">
+        <item>सिंधी</item>
+        <item>सुरती</item>
+        <item>जाफराबादी </item>
+        <item>नागपुरी</item>
+        <item>निळी रावी </item>
+        <item>पंढरपुरी</item>
+    </string-array>
+
+    <string-array name="array_vet">
+        <item>वेत -1</item>
+        <item>वेत- 2</item>
+        <item>वेत- 3</item>
+        <item>वेत- 4</item>
+        <item>वेत- 5</item>
+        <item>वेत- 6</item>
+        <item>वेत- 7</item>
+        <item>वेत- 8</item>
+        <item>वेत- 9</item>
+        <item>वेत- 10</item>
+    </string-array>
+
+    <string-array name="array_preg">
+        <item>1 महिने</item>
+        <item>2 महिने</item>
+        <item>3 महिने</item>
+        <item>4 महिने</item>
+        <item>5 महिने</item>
+        <item>6 महिने</item>
+        <item>7 महिने</item>
+        <item>8 महिने</item>
+        <item>9 महिने</item>
+
+    </string-array>
+    <string name="title_activity_category_add">Add by Category</string>
+    <string name="action_search">Search Here...</string>
+    <string name="title_activity_search">Search...</string>
+    <string name="title_activity_video">Playing Video</string>
+    <string name="title_tagline">Live Stock Sale &amp; Purchase</string>
+    <string name="action_doctor">Doctor</string>
+    <string name="title_activity_doctor_list">Doctor List</string>
+    <string name="title_doctor_name">Doctors Name</string>
+    <string name="title_mobile">Mobile</string>
+    <string name="title_profile_detail">Profile Details</string>
+    <string name="hint_speciality">Specialist / Speciality</string>
+    <string name="hint_experience">Experience</string>
+    <string name="title_activity_language">Language</string>
+    <string name="title_select_language">Select Language (Default English)</string>
+    <string name="action_hindi">हिन्दी</string>
+    <string name="action_english">English</string>
+    <string name="action_marathi">मराठी</string>
+    <string name="action_gujrati">ગુજરાતી</string>
+    <string name="action_skip">Skip</string>
+    <string name="empty">Cannot be empty</string>
+    <string name="invalid">Invalid</string>
+
+    <string name="age">Age: %1$d</string>
+    <string name="milkhistory">Last Milk History: %1$d ltr</string>
+</resources>

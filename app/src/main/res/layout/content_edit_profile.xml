@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ffffff"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@+id/scrollId"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fadeScrollbars="false"
+            android:isScrollContainer="false"
+            android:minHeight="50dp"
+            android:scrollbarSize="1dp"
+            android:scrollbarThumbVertical="@android:color/white">
+
+            <FrameLayout
+                android:id="@+id/frrm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="1200dp">
+
+                    <RelativeLayout
+                        android:id="@+id/jjj25"
+                        android:layout_width="wrap_content"
+                        android:layout_height="1200dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:background="#ffffff"
+                            android:orientation="vertical"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:layout_marginTop="20dp"
+                                android:gravity="center"
+                                android:text="EDIT PROFILE"
+                                android:textColor="@color/colorPrimaryDark"
+                                android:textSize="20dp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:text="@string/hint_mobile"
+                                    android:textColor="@color/black"
+                                    android:textSize="16dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="vertical">
+
+                                <EditText
+                                    android:id="@+id/editTextprofileid"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/linearLayout"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:background="@drawable/edittext_bg"
+                                    android:ellipsize="start"
+                                    android:hint="@string/hint_mobile"
+                                    android:inputType="phone"
+                                    android:paddingLeft="10dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#d6d7d7"
+                                    android:textColorLink="@color/colorPrimary"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:text="@string/hint_fullname"
+                                    android:textColor="@color/black"
+                                    android:textSize="16dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="vertical">
+
+                                <EditText
+                                    android:id="@+id/editTextname"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/linearLayout"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:background="@drawable/edittext_bg"
+                                    android:ellipsize="start"
+                                    android:hint="@string/hint_fullname"
+                                    android:inputType="textCapSentences"
+                                    android:paddingLeft="10dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#d6d7d7"
+                                    android:textColorLink="@color/colorPrimary"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:text="@string/hint_address"
+                                    android:textColor="@color/black"
+                                    android:textSize="16dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="vertical">
+
+                                <EditText
+                                    android:id="@+id/editTextaddress"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/linearLayout"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:background="@drawable/edittext_bg"
+                                    android:ellipsize="start"
+                                    android:hint="@string/hint_address"
+                                    android:inputType="text"
+                                    android:paddingLeft="10dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#d6d7d7"
+                                    android:textColorLink="@color/colorPrimary"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:text="@string/hint_village"
+                                    android:textColor="@color/black"
+                                    android:textSize="16dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="vertical">
+
+                                <EditText
+                                    android:id="@+id/editTextcity"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/linearLayout"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:background="@drawable/edittext_bg"
+                                    android:ellipsize="start"
+                                    android:hint="@string/hint_village"
+                                    android:inputType="textCapSentences"
+                                    android:paddingLeft="10dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#d6d7d7"
+                                    android:textColorLink="@color/colorPrimary"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:text="@string/hint_taluka"
+                                    android:textColor="@color/black"
+                                    android:textSize="16dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="vertical">
+
+                                <EditText
+                                    android:id="@+id/editTexttaluka"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/linearLayout"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:background="@drawable/edittext_bg"
+                                    android:ellipsize="start"
+                                    android:hint="@string/hint_taluka"
+                                    android:inputType="textCapSentences"
+                                    android:paddingLeft="10dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#d6d7d7"
+                                    android:textColorLink="@color/colorPrimary"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:text="@string/hint_district"
+                                    android:textColor="@color/black"
+                                    android:textSize="16dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="vertical">
+
+                                <EditText
+                                    android:id="@+id/editTextdistrict"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/linearLayout"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:background="@drawable/edittext_bg"
+                                    android:ellipsize="start"
+                                    android:hint="@string/hint_district"
+                                    android:inputType="textCapSentences"
+                                    android:paddingLeft="10dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#d6d7d7"
+                                    android:textColorLink="@color/colorPrimary"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="25dp"
+                                    android:text="@string/hint_state"
+                                    android:textColor="@color/black"
+                                    android:textSize="16dp" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="vertical">
+
+                                <EditText
+                                    android:id="@+id/editTextstate"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="40dp"
+                                    android:layout_below="@+id/linearLayout"
+                                    android:layout_alignParentStart="true"
+                                    android:layout_alignParentLeft="true"
+                                    android:background="@drawable/edittext_bg"
+                                    android:ellipsize="start"
+                                    android:hint="@string/hint_state"
+                                    android:inputType="textCapSentences"
+                                    android:paddingLeft="10dp"
+                                    android:singleLine="true"
+                                    android:textColor="@color/black"
+                                    android:textColorHint="#d6d7d7"
+                                    android:textColorLink="@color/colorPrimary"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="vertical">
+
+                                <CheckBox
+                                    android:id="@+id/isdoctor"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:buttonTint="@color/colorAccent"
+                                    android:text="@string/title_doctor" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:id="@+id/layoutdoctor"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:orientation="vertical"
+                                android:visibility="gone">
+
+                                <TextView
+                                    android:id="@+id/referralnote"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/note_doctor" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="16dp"
+                                    android:text="@string/note_location"
+                                    android:textStyle="bold" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="25dp"
+                                        android:text="@string/hint_add_location"
+                                        android:textColor="@color/black"
+                                        android:textSize="16dp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+
+                                    android:orientation="vertical">
+
+                                    <EditText
+                                        android:id="@+id/editTextlocation"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="40dp"
+                                        android:layout_below="@+id/linearLayout"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_alignParentLeft="true"
+                                        android:background="@drawable/edittext_bg"
+                                        android:ellipsize="start"
+                                        android:hint="@string/hint_add_location"
+                                        android:inputType="text"
+                                        android:paddingLeft="10dp"
+                                        android:singleLine="true"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="#d6d7d7"
+                                        android:textColorLink="@color/colorPrimary"
+                                        android:textSize="14sp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="25dp"
+                                        android:text="@string/hint_add_serving_location"
+                                        android:textColor="@color/black"
+                                        android:textSize="16dp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+
+                                    android:orientation="vertical">
+
+                                    <EditText
+                                        android:id="@+id/editTextServingVillage"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="80dp"
+                                        android:layout_below="@+id/linearLayout"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_alignParentLeft="true"
+                                        android:background="@drawable/edittext_bg"
+                                        android:ellipsize="start"
+                                        android:gravity="top|left"
+                                        android:hint="@string/hint_add_serving_location"
+                                        android:inputType="text"
+                                        android:paddingLeft="10dp"
+                                        android:singleLine="false"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="#d6d7d7"
+                                        android:textColorLink="@color/colorPrimary"
+                                        android:textSize="14sp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="25dp"
+                                        android:text="@string/hint_speciality"
+                                        android:textColor="@color/black"
+                                        android:textSize="16dp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+
+                                    android:orientation="vertical">
+
+                                    <EditText
+                                        android:id="@+id/editTextspeciality"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="40dp"
+                                        android:layout_below="@+id/linearLayout"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_alignParentLeft="true"
+                                        android:background="@drawable/edittext_bg"
+                                        android:ellipsize="start"
+                                        android:hint="@string/hint_speciality"
+                                        android:inputType="text"
+                                        android:paddingLeft="10dp"
+                                        android:singleLine="true"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="#d6d7d7"
+                                        android:textColorLink="@color/colorPrimary"
+                                        android:textSize="14sp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="10dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="25dp"
+                                        android:text="@string/hint_experience"
+                                        android:textColor="@color/black"
+                                        android:textSize="16dp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="vertical">
+
+                                    <EditText
+                                        android:id="@+id/editTextexperience"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="40dp"
+                                        android:layout_below="@+id/linearLayout"
+                                        android:layout_alignParentStart="true"
+                                        android:layout_alignParentLeft="true"
+                                        android:background="@drawable/edittext_bg"
+                                        android:ellipsize="start"
+                                        android:hint="@string/hint_experience"
+                                        android:inputType="number"
+                                        android:paddingLeft="10dp"
+                                        android:singleLine="true"
+                                        android:textColor="@color/black"
+                                        android:textColorHint="#d6d7d7"
+                                        android:textColorLink="@color/colorPrimary"
+                                        android:textSize="14sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginRight="10dp">
+                                <!-- <CheckBox
+                                    android:id="@+id/agreement"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:buttonTint="@color/colorAccent"
+                                    android:text="@string/note_agreement" />
+                                    -->
+                                <TextView
+                                    android:id="@+id/agreement"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:autoLink="all"
+                                    android:text="@string/note_agreement" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+                    </RelativeLayout>
+                </LinearLayout>
+            </FrameLayout>
+        </ScrollView>
+
+        <Button
+            android:id="@+id/btnSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_gravity="bottom"
+            android:background="@color/colorPrimary"
+            android:text="UPDATE"
+            android:textColor="@android:color/white" />
+
+    </FrameLayout>
+</LinearLayout><!--   </LinearLayout>-->
