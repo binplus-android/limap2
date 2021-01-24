@@ -209,7 +209,7 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
 
         // jsonArray = null;
         index = 0;
-        readAdds();
+
 
     }
 
@@ -238,6 +238,7 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
                         .build();
 
                 APIService service = retrofit.create(APIService.class);
+                Log.e("readAdds: ",lat+" :: "+longi+" ::  "+ Pref.getInstance(getApplicationContext()).getUserId());
                 Call<List<SetterAllPostDetails>> call = service.myPostDetails(lat,longi, Pref.getInstance(getApplicationContext()).getUserId());
                 call.enqueue(new Callback<List<SetterAllPostDetails>>()
                 {
@@ -357,8 +358,8 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
         {
             lat     =   mCurrentLocation.getLatitude();
             longi   =   mCurrentLocation.getLongitude();
-            // editTextFirmName.setText("Lat: " + mCurrentLocation.getLatitude() + ", " +"Lng: " + mCurrentLocation.getLongitude()  );
-
+            Log.e("updateLocationUI: ","Lat: " + mCurrentLocation.getLatitude() + ", " +"Lng: " + mCurrentLocation.getLongitude()  );
+            readAdds();
             // giving a blink animation on TextView
             // editTextFirmName.setAlpha(0);
             //  editTextFirmName.animate().alpha(1).setDuration(300);

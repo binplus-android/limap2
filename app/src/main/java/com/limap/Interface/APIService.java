@@ -118,7 +118,9 @@ public interface APIService {
     @FormUrlEncoded
     @POST("api_get_my_favourite.php")
     Call<List<SetterAllPostDetails>> myFavourite(
-            @Field("app_user_id") String app_user_id
+            @Field("app_user_id") String app_user_id,
+            @Field("lat") double lat,
+            @Field("longi") double longi
     );
 
     @FormUrlEncoded

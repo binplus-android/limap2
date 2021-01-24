@@ -128,7 +128,7 @@
                 android:ellipsize="end"
                 android:padding="8dp"
                 android:gravity="end"
-                android:text="@string/title_title"
+                android:text="0.0 km"
                  />
         </LinearLayout>
 

@@ -50,6 +50,7 @@ public class CategoryAddRVAdapter extends  RecyclerView.Adapter<CategoryAddRVAda
     public void onBindViewHolder(final ViewHolder holder, int position) {
         final int pos = position;
         final SetterAllPostDetails getDataAdapter1 = getDataAdapter.get(position);
+
         // userConatctNo.setText(Html.fromHtml("<u>"+response.body().getUser_contact()+"</u>"));
         String vet  =   "";
         if(!getDataAdapter1.getCategory().equals("ox")) {
@@ -57,6 +58,9 @@ public class CategoryAddRVAdapter extends  RecyclerView.Adapter<CategoryAddRVAda
         }
         holder.title.setText(getDataAdapter1.getCategory()+vet);
         holder.description.setText(getDataAdapter1.getAddress());
+        float fKm=Float.parseFloat(getDataAdapter1.getDistance());
+        float f=Math.round(fKm);
+        holder.tv_distance.setText(String.valueOf(f)+"km ");
 
 
         holder.image1.setOnClickListener(new View.OnClickListener() {
@@ -376,7 +380,7 @@ public class CategoryAddRVAdapter extends  RecyclerView.Adapter<CategoryAddRVAda
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title;
-        TextView description;
+        TextView description,tv_distance;
 
         ImageView image1;
         ImageView image2;
@@ -391,7 +395,7 @@ public class CategoryAddRVAdapter extends  RecyclerView.Adapter<CategoryAddRVAda
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
             description = (TextView) itemView.findViewById(R.id.description);
-
+            tv_distance = (TextView) itemView.findViewById(R.id.tv_distance);
             image1 = (ImageView) itemView.findViewById(R.id.image1);
             image2 = (ImageView) itemView.findViewById(R.id.image2);
             image3 = (ImageView) itemView.findViewById(R.id.image3);

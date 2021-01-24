@@ -1,7 +1,9 @@
 package com.limap.Activity;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -41,10 +43,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.DexterError;
 import com.karumi.dexter.listener.PermissionDeniedResponse;
 import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.PermissionRequestErrorListener;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.limap.Adapter.CategoryAddRVAdapter;
 import com.limap.BaseController;
@@ -126,6 +132,11 @@ public class MyFavoriteActivity extends AppCompatActivity {
                 finish();
             }
         });
+        init();
+        // restore the values from saved instance state
+        restoreValuesFromBundle(savedInstanceState);
+        dexter();
+        startLocationUpdates();
         swipeContainer = findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -204,12 +215,8 @@ public class MyFavoriteActivity extends AppCompatActivity {
         // jsonArray = null;
         index = 0;
 
-        init();
-        // restore the values from saved instance state
-        restoreValuesFromBundle(savedInstanceState);
-        dexter();
-        startLocationUpdates();
-        readAdds();
+
+//        readAdds();
     }
 
     private void readAdds() {
@@ -241,15 +248,17 @@ public class MyFavoriteActivity extends AppCompatActivity {
                         .build();
 
                 APIService service = retrofit.create(APIService.class);
-                Call<List<SetterAllPostDetails>> call = service.myFavourite(Pref.getInstance(getApplicationContext()).getUserId());
+                Log.e("post_data", "readAdds: "+Pref.getInstance(getApplicationContext()).getUserId()+" : "+lat+" :: "+longi );
+                Call<List<SetterAllPostDetails>> call = service.myFavourite(Pref.getInstance(getApplicationContext()).getUserId(),lat,longi);
                 call.enqueue(new Callback<List<SetterAllPostDetails>>()
                 {
                     @Override
                     public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
                     {
                        // progressDialog.dismiss();
-
+                        Log.e("favvvvvv", "onResponse: "+response.body().get(0).toString() );
                         List<SetterAllPostDetails> datumList1 = response.body();
+
                         if(datumList1.size()>0) {
                             recyclerView.setVisibility(View.VISIBLE);
                             recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
@@ -305,14 +314,63 @@ public class MyFavoriteActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+//    private void init()
+//    {
+//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+//        mSettingsClient = LocationServices.getSettingsClient(this);
+//        mLocationCallback = new LocationCallback() {
+//            @Override
+//            public void onLocationResult(LocationResult locationResult)
+//            {
+//                super.onLocationResult(locationResult);
+//                // location is received
+//                mCurrentLocation = locationResult.getLastLocation();
+//                mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+//                updateLocationUI();
+//            }
+//        };
+//
+//        mRequestingLocationUpdates = false;
+//        mLocationRequest = new LocationRequest();
+//        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+//        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//
+//        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+//        builder.addLocationRequest(mLocationRequest);
+//        mLocationSettingsRequest = builder.build();
+//    }  private void init() {
+//        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+//        mSettingsClient = LocationServices.getSettingsClient(this);
+//        mLocationCallback = new LocationCallback() {
+//            @Override
+//            public void onLocationResult(LocationResult locationResult) {
+//                super.onLocationResult(locationResult);
+//                // location is received
+//                mCurrentLocation = locationResult.getLastLocation();
+//                mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
+//                updateLocationUI();
+//            }
+//        };
+//
+//        mRequestingLocationUpdates = false;
+//        mLocationRequest = new LocationRequest();
+//        mLocationRequest.setInterval(UPDATE_INTERVAL_IN_MILLISECONDS);
+//        mLocationRequest.setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS);
+//        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+//
+//        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+//        builder.addLocationRequest(mLocationRequest);
+//        mLocationSettingsRequest = builder.build();
+//    }
+
     private void init()
     {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         mSettingsClient = LocationServices.getSettingsClient(this);
         mLocationCallback = new LocationCallback() {
             @Override
-            public void onLocationResult(LocationResult locationResult)
-            {
+            public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 // location is received
                 mCurrentLocation = locationResult.getLastLocation();
@@ -331,13 +389,173 @@ public class MyFavoriteActivity extends AppCompatActivity {
         builder.addLocationRequest(mLocationRequest);
         mLocationSettingsRequest = builder.build();
     }
+
+
     /**
      * Restoring values from saved instance state
      */
-    private void restoreValuesFromBundle(Bundle savedInstanceState)
+//    private void restoreValuesFromBundle(Bundle savedInstanceState)
+//    {
+//        if (savedInstanceState != null)
+//        {
+//            if (savedInstanceState.containsKey("is_requesting_updates")) {
+//                mRequestingLocationUpdates = savedInstanceState.getBoolean("is_requesting_updates");
+//            }
+//            if (savedInstanceState.containsKey("last_known_location")) {
+//                mCurrentLocation = savedInstanceState.getParcelable("last_known_location");
+//            }
+//            if (savedInstanceState.containsKey("last_updated_on")) {
+//                mLastUpdateTime = savedInstanceState.getString("last_updated_on");
+//            }
+//        }
+//        updateLocationUI();
+//    }
+    /**
+     * Update the UI displaying the location data
+     * and toggling the buttons
+     */
+//    private void updateLocationUI()
+//    {
+//        if (mCurrentLocation != null)
+//        {
+//            lat     =   mCurrentLocation.getLatitude();
+//            longi   =   mCurrentLocation.getLongitude();
+//            Log.e("location", "updateLocationUI: " +"Lat: " + mCurrentLocation.getLatitude() + ", " +"Lng: " + mCurrentLocation.getLongitude()  );
+//
+//            // giving a blink animation on TextView
+//            // editTextFirmName.setAlpha(0);
+//            //  editTextFirmName.animate().alpha(1).setDuration(300);
+//
+//            // location last updated time
+//            //    editTextContactName.setText("Last updated on: " + mLastUpdateTime);
+//        }
+//    }
+    /**
+     * Starting location updates
+     * Check whether location settings are satisfied and then
+     * location updates will be requested
+     */
+
+//    private void startLocationUpdates()
+//    {
+//        mSettingsClient
+//                .checkLocationSettings(mLocationSettingsRequest)
+//                .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+//                    @Override
+//                    public void onSuccess(LocationSettingsResponse locationSettingsResponse)
+//                    {
+//                        Log.i("LOC", "All location settings are satisfied.");
+//                        //    Toast.makeText(getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
+//                        //noinspection MissingPermission
+//                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+//                        updateLocationUI();
+//                    }
+//                })
+//                .addOnFailureListener(this, new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e)
+//                    {
+//                        int statusCode = ((ApiException) e).getStatusCode();
+//                        switch (statusCode)
+//                        {
+//                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+//                                Log.i("LOCATION", "Location settings are not satisfied. Attempting to upgrade " +
+//                                        "location settings ");
+//                                try
+//                                {
+//                                    // Show the dialog by calling startResolutionForResult(), and check the
+//                                    // result in onActivityResult().
+//                                    ResolvableApiException rae = (ResolvableApiException) e;
+//                                    rae.startResolutionForResult(MyFavoriteActivity.this, REQUEST_CHECK_SETTINGS);
+//                                }
+//                                catch (IntentSender.SendIntentException sie)
+//                                {
+//                                    Log.i("LOCATION", "Pending Intent unable to execute request.");
+//                                }
+//                                break;
+//                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+//                                String errorMessage = "Location settings are inadequate, and cannot be fixed here. Fix in Settings.";
+//                                Log.e("LOCATION", errorMessage);
+//                                Toast.makeText(MyFavoriteActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+//                        }
+//                        updateLocationUI();
+//                    }
+//                });
+//    }
+//    private void openSettings()
+//    {
+//        Intent intent = new Intent();
+//        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//        Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
+//        intent.setData(uri);
+//        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+//        startActivity(intent);
+//    }
+//
+//    public void stopLocationUpdates()
+//    {
+//        // Removing location updates
+//        mFusedLocationClient
+//                .removeLocationUpdates(mLocationCallback)
+//                .addOnCompleteListener(this, new OnCompleteListener<Void>()
+//                {
+//                    @Override
+//                    public void onComplete(@NonNull Task<Void> task)
+//                    {
+//                        //  Toast.makeText(getApplicationContext(), "Location updates stopped!", Toast.LENGTH_SHORT).show();
+//                    }
+//                });
+//    }
+    private boolean checkPermissions()
     {
-        if (savedInstanceState != null)
-        {
+        int permissionState = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+//    private  void dexter()
+//    {
+//        // Requesting ACCESS_FINE_LOCATION using Dexter library
+//        Dexter.withActivity(this)
+//                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+//                .withListener(new PermissionListener() {
+//                    @Override
+//                    public void onPermissionGranted(PermissionGrantedResponse response) {
+//                        mRequestingLocationUpdates = true;
+//                        startLocationUpdates();
+//                    }
+//                    @Override
+//                    public void onPermissionDenied(PermissionDeniedResponse response)
+//                    {
+//                        if (response.isPermanentlyDenied())
+//                        {
+//                            // open device settings when the permission is
+//                            // denied permanently
+//                            openSettings();
+//                        }
+//                    }
+//                    @Override
+//                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token)
+//                    {
+//                        token.continuePermissionRequest();
+//                    }
+//                }).check();
+//    }
+//    @Override
+//    protected void onPause()
+//    {
+//        super.onPause();
+//        if (mRequestingLocationUpdates)
+//        {
+//            // pausing location updates
+//            stopLocationUpdates();
+//        }
+//    }
+
+    /**
+     * Restoring values from saved instance state
+     */
+    private void restoreValuesFromBundle(Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
             if (savedInstanceState.containsKey("is_requesting_updates")) {
                 mRequestingLocationUpdates = savedInstanceState.getBoolean("is_requesting_updates");
             }
@@ -350,18 +568,17 @@ public class MyFavoriteActivity extends AppCompatActivity {
         }
         updateLocationUI();
     }
+
     /**
      * Update the UI displaying the location data
      * and toggling the buttons
      */
-    private void updateLocationUI()
-    {
-        if (mCurrentLocation != null)
-        {
-            lat     =   mCurrentLocation.getLatitude();
-            longi   =   mCurrentLocation.getLongitude();
-            // editTextFirmName.setText("Lat: " + mCurrentLocation.getLatitude() + ", " +"Lng: " + mCurrentLocation.getLongitude()  );
-
+    private void updateLocationUI() {
+        if (mCurrentLocation != null) {
+            lat = mCurrentLocation.getLatitude();
+            longi = mCurrentLocation.getLongitude();
+            Log.e("updateLocationUI: ","Lat: " + mCurrentLocation.getLatitude() + ", " +"Lng: " + mCurrentLocation.getLongitude()  );
+            readAdds();
             // giving a blink animation on TextView
             // editTextFirmName.setAlpha(0);
             //  editTextFirmName.animate().alpha(1).setDuration(300);
@@ -370,20 +587,19 @@ public class MyFavoriteActivity extends AppCompatActivity {
             //    editTextContactName.setText("Last updated on: " + mLastUpdateTime);
         }
     }
+
     /**
      * Starting location updates
      * Check whether location settings are satisfied and then
      * location updates will be requested
      */
 
-    private void startLocationUpdates()
-    {
+    private void startLocationUpdates() {
         mSettingsClient
                 .checkLocationSettings(mLocationSettingsRequest)
                 .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
                     @Override
-                    public void onSuccess(LocationSettingsResponse locationSettingsResponse)
-                    {
+                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
                         Log.i("LOC", "All location settings are satisfied.");
                         //    Toast.makeText(getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
                         //noinspection MissingPermission
@@ -393,23 +609,18 @@ public class MyFavoriteActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
+                    public void onFailure(@NonNull Exception e) {
                         int statusCode = ((ApiException) e).getStatusCode();
-                        switch (statusCode)
-                        {
+                        switch (statusCode) {
                             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
                                 Log.i("LOCATION", "Location settings are not satisfied. Attempting to upgrade " +
                                         "location settings ");
-                                try
-                                {
+                                try {
                                     // Show the dialog by calling startResolutionForResult(), and check the
                                     // result in onActivityResult().
                                     ResolvableApiException rae = (ResolvableApiException) e;
                                     rae.startResolutionForResult(MyFavoriteActivity.this, REQUEST_CHECK_SETTINGS);
-                                }
-                                catch (IntentSender.SendIntentException sie)
-                                {
+                                } catch (IntentSender.SendIntentException sie) {
                                     Log.i("LOCATION", "Pending Intent unable to execute request.");
                                 }
                                 break;
@@ -422,8 +633,8 @@ public class MyFavoriteActivity extends AppCompatActivity {
                     }
                 });
     }
-    private void openSettings()
-    {
+
+    private void openSettings() {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
@@ -432,28 +643,21 @@ public class MyFavoriteActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void stopLocationUpdates()
-    {
+    public void stopLocationUpdates() {
         // Removing location updates
         mFusedLocationClient
                 .removeLocationUpdates(mLocationCallback)
-                .addOnCompleteListener(this, new OnCompleteListener<Void>()
-                {
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task)
-                    {
+                    public void onComplete(@NonNull Task<Void> task) {
                         //  Toast.makeText(getApplicationContext(), "Location updates stopped!", Toast.LENGTH_SHORT).show();
                     }
                 });
     }
-    private boolean checkPermissions()
-    {
-        int permissionState = ActivityCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION);
-        return permissionState == PackageManager.PERMISSION_GRANTED;
-    }
-    private  void dexter()
-    {
+
+
+
+    private void dexter() {
         // Requesting ACCESS_FINE_LOCATION using Dexter library
         Dexter.withActivity(this)
                 .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -463,31 +667,102 @@ public class MyFavoriteActivity extends AppCompatActivity {
                         mRequestingLocationUpdates = true;
                         startLocationUpdates();
                     }
+
                     @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response)
-                    {
-                        if (response.isPermanentlyDenied())
-                        {
+                    public void onPermissionDenied(PermissionDeniedResponse response) {
+                        if (response.isPermanentlyDenied()) {
                             // open device settings when the permission is
                             // denied permanently
                             openSettings();
                         }
                     }
+
                     @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token)
-                    {
+                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
                         token.continuePermissionRequest();
                     }
                 }).check();
     }
+
     @Override
-    protected void onPause()
-    {
+    protected void onStart() {
+        super.onStart();
+
+    }
+
+    @Override
+    protected void onPause() {
         super.onPause();
-        if (mRequestingLocationUpdates)
-        {
+        if (mRequestingLocationUpdates) {
             // pausing location updates
             stopLocationUpdates();
         }
+    }
+    private void requestStoragePermission() {
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.CAMERA)
+                .withListener(new MultiplePermissionsListener() {
+                    @Override
+                    public void onPermissionsChecked(MultiplePermissionsReport report) {
+                        // check if all permissions are granted
+                        if (report.areAllPermissionsGranted()) {
+                            //        Toast.makeText(getApplicationContext(), "All permissions are granted!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        // check for permanent denial of any permission
+                        if (report.isAnyPermissionPermanentlyDenied()) {
+                            // show alert dialog navigating to Settings
+                            showSettingsDialog();
+                        }
+                    }
+
+                    @Override
+                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
+                        token.continuePermissionRequest();
+                    }
+                }).
+                withErrorListener(new PermissionRequestErrorListener() {
+                    @Override
+                    public void onError(DexterError error) {
+                        Toast.makeText(getApplicationContext(), "Error occurred! ", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .onSameThread()
+                .check();
+    }
+    private void showSettingsDialog()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MyFavoriteActivity.this);
+        builder.setTitle("Need Permissions");
+        builder.setMessage("This app needs permission to use this feature. You can grant them in app settings.");
+        builder.setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+                openSettings1();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
+    private void openSettings1() {
+        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+        startActivityForResult(intent, 101);
     }
 }
