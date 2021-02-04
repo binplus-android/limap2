@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import androidx.viewpager.widget.PagerAdapter;
 
@@ -16,6 +17,7 @@ import com.limap.Activity.PhotoActivity;
 import com.limap.Activity.VideoActivity;
 import com.limap.Activity.ViewAddActivity;
 import com.limap.R;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -26,15 +28,16 @@ import org.json.JSONException;
  */
 public class ViewPagerImageAdapter extends PagerAdapter {
 
-    private ViewAddActivity context;
+    private Context context;
     private LayoutInflater layoutInflater;
 
     private boolean[] isdone;
+    boolean btnclick=false;
     String image1,image2,image3,image4,image5,video1;
     //int imageids[] = {R.drawable.cow1, R.drawable.cow2, R.drawable.cow3, R.drawable.cow4, R.drawable.cow5, R.drawable.cow6};
 
    // public ViewPagerImageAdapter(ViewAddActivity context,String img1,String img2,String img3,String img4,String img5,String vid1) {
-    public ViewPagerImageAdapter(ViewAddActivity context,String img1,String img2,String img3,String img5) {
+    public ViewPagerImageAdapter(Context context,String img1,String img2,String img3,String img5,boolean btnclick) {
 
         this.context = context;
         image1 =   img1;
@@ -42,6 +45,7 @@ public class ViewPagerImageAdapter extends PagerAdapter {
         image3 =   img3;
         //image4 =   img4;
         image5 =   img5;
+        this.btnclick=btnclick;
         //video1   =   vid1;
         layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -92,23 +96,42 @@ public class ViewPagerImageAdapter extends PagerAdapter {
         try {
 
             final ImageView imageView = itemView.findViewById(R.id.add);
+            final ProgressBar pbar = itemView.findViewById(R.id.pbar);
+                 pbar.setVisibility(View.VISIBLE);
 //            imageView.setImageResource(imageids[position]);
             Log.d("video_url",image1);
 
              if(position ==0) {
+
               //  Glide.with(context).load(image1).into(imageView);
                  Picasso.with(context)
                          .load(image1)
-                         .into(imageView);
+                         .into(imageView, new Callback() {
+                             @Override
+                             public void onSuccess() {
+                                 pbar.setVisibility(View.GONE);
+                             }
+
+                             @Override
+                             public void onError() {
+                                 pbar.setVisibility(View.GONE);
+                             }
+                         });
                  imageView.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View v) {
 
-                         Intent target = new Intent(context, PhotoActivity.class);
+                         if(btnclick){
+                             goToPhotoPage();
+                         }
+//                         Intent target = new Intent(context, PhotoActivity.class);
+//
+//                         target.putExtra("image1", image1);
+//                         target.putExtra("image2", image2);
+//                         target.putExtra("image3", image3);
+//                         target.putExtra("image5", image5);
 
-                         target.putExtra("photo_url", image1);
-
-                         context.startActivity(target);
+//                         context.startActivity(target);
                      }
                  });
 
@@ -117,16 +140,32 @@ public class ViewPagerImageAdapter extends PagerAdapter {
               //  Glide.with(context).load(image2).into(imageView);
                  Picasso.with(context)
                          .load(image2)
-                         .into(imageView);
+                         .into(imageView, new Callback() {
+                             @Override
+                             public void onSuccess() {
+                                 pbar.setVisibility(View.GONE);
+                             }
+
+                             @Override
+                             public void onError() {
+                                 pbar.setVisibility(View.GONE);
+                             }
+                         });
                  imageView.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View v) {
 
-                         Intent target = new Intent(context, PhotoActivity.class);
-
-                         target.putExtra("photo_url", image2);
-
-                         context.startActivity(target);
+                         if(btnclick){
+                             goToPhotoPage();
+                         }
+//                         Intent target = new Intent(context, PhotoActivity.class);
+//
+//                         target.putExtra("image1", image1);
+//                         target.putExtra("image2", image2);
+//                         target.putExtra("image3", image3);
+//                         target.putExtra("image5", image5);
+//
+//                         context.startActivity(target);
                      }
                  });
             }
@@ -134,16 +173,32 @@ public class ViewPagerImageAdapter extends PagerAdapter {
               //  Glide.with(context).load(image3).into(imageView);
                  Picasso.with(context)
                          .load(image3)
-                         .into(imageView);
+                         .into(imageView, new Callback() {
+                             @Override
+                             public void onSuccess() {
+                                 pbar.setVisibility(View.GONE);
+                             }
+
+                             @Override
+                             public void onError() {
+                                 pbar.setVisibility(View.GONE);
+                             }
+                         });
                  imageView.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View v) {
 
-                         Intent target = new Intent(context, PhotoActivity.class);
-
-                         target.putExtra("photo_url", image3);
-
-                         context.startActivity(target);
+                         if(btnclick){
+                             goToPhotoPage();
+                         }
+//                         Intent target = new Intent(context, PhotoActivity.class);
+//
+//                         target.putExtra("image1", image1);
+//                         target.putExtra("image2", image2);
+//                         target.putExtra("image3", image3);
+//                         target.putExtra("image5", image5);
+//
+//                         context.startActivity(target);
                      }
                  });
             }
@@ -151,16 +206,31 @@ public class ViewPagerImageAdapter extends PagerAdapter {
              //   Glide.with(context).load(image5).into(imageView);
                  Picasso.with(context)
                          .load(image5)
-                         .into(imageView);
+                         .into(imageView, new Callback() {
+                             @Override
+                             public void onSuccess() {
+                                 pbar.setVisibility(View.GONE);
+                             }
+
+                             @Override
+                             public void onError() {
+                                 pbar.setVisibility(View.GONE);
+                             }
+                         });
                  imageView.setOnClickListener(new View.OnClickListener() {
                      @Override
                      public void onClick(View v) {
 
-                         Intent target = new Intent(context, PhotoActivity.class);
-
-                         target.putExtra("photo_url", image5);
-
-                         context.startActivity(target);
+                         if(btnclick){
+                          goToPhotoPage();
+                         }
+//                         Intent target = new Intent(context, PhotoActivity.class);
+//                         target.putExtra("image1", image1);
+//                         target.putExtra("image2", image2);
+//                         target.putExtra("image3", image3);
+//                         target.putExtra("image5", image5);
+//
+//                         context.startActivity(target);
                      }
                  });
             }
@@ -218,6 +288,15 @@ public class ViewPagerImageAdapter extends PagerAdapter {
         container.removeView((FrameLayout) object);
     }
 
+    private void goToPhotoPage(){
+        Intent target = new Intent(context, PhotoActivity.class);
+        target.putExtra("image1", image1);
+        target.putExtra("image2", image2);
+        target.putExtra("image3", image3);
+        target.putExtra("image5", image5);
+
+        context.startActivity(target);
+    }
 
 
 }

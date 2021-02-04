@@ -207,21 +207,21 @@ public class MainActivity extends AppCompatActivity {
         //RecyclerView Layout
         LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(llm);
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
-            @Override
-            public void onScrolledToEnd() {
-
-                if (loadMore) {
-
-                    index += 10;
-
-                    readAdds();
-
-                    loadMore = false;
-
-                }
-            }
-        });
+//        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
+//            @Override
+//            public void onScrolledToEnd() {
+//
+//                if (loadMore) {
+//
+//                    index += 10;
+//
+//                    readAdds();
+//
+//                    loadMore = false;
+//
+//                }
+//            }
+//        });
 
         //   jsonArray = null;
         index = 0;

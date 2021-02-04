@@ -175,7 +175,8 @@ public class ViewAddActivity extends AppCompatActivity {
                 bundle.getString("image1"),
                 bundle.getString("image2"),
                 bundle.getString("image3"),
-                bundle.getString("image5"));
+                bundle.getString("image5")
+                ,true);
         viewPager.setAdapter(adapter);
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
