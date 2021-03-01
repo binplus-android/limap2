@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Html;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -98,6 +99,7 @@ public class OTPActivity extends AppCompatActivity {
                         Intent target = new Intent(getApplicationContext(), OTPVerifyActivity.class);
                         target.putExtra("app_user_id", response.body().getApp_user_id());
                         target.putExtra("mobile_no", mob);
+                        Log.e("OTPACTIVYT", "onResponse: "+mob+" :: "+ response.body().getApp_user_id());
                         startActivity(target);
                         overridePendingTransition(R.anim.enter, R.anim.exit);
                     } else {

@@ -26,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -91,6 +92,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
+    private final String TAG=MainActivity.class.getSimpleName();
     private Boolean exit = false;
 
     private SwipeRefreshLayout swipeContainer;
@@ -161,6 +163,21 @@ public class MainActivity extends AppCompatActivity {
         restoreValuesFromBundle(savedInstanceState);
         dexter();
         startLocationUpdates();
+        if(lat!=0.0 &&  longi!=0.0){
+            index = 0;
+            readAdds();
+        }else{
+            Handler handler=new Handler();
+            Runnable r=new Runnable() {
+                @Override
+                public void run() {
+                    index = 0;
+                    readAdds();
+
+                }
+            };
+            handler.postDelayed(r,2000);
+        }
       /*  if(Pref.getInstance(getApplicationContext()).getLANGUAGE().equals("ENGLISH"))
         {
             context = LocaleHelper.setLocale(MainActivity.this, "en");
@@ -224,8 +241,7 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
         //   jsonArray = null;
-        index = 0;
-        readAdds();
+
 
        /* final CircleNavigationView mCircleNavigationView;
         mCircleNavigationView = (CircleNavigationView) findViewById(R.id.navigation);
@@ -375,6 +391,7 @@ public class MainActivity extends AppCompatActivity {
                         .build();
 
                 APIService service = retrofit.create(APIService.class);
+                Log.e(TAG, "readAdds: "+lat+" :: "+longi );
                 Call<List<SetterAllPostDetails>> call = service.homePostAll(lat,longi);
                 call.enqueue(new Callback<List<SetterAllPostDetails>>()
                 {
@@ -487,6 +504,7 @@ public class MainActivity extends AppCompatActivity {
         if (mCurrentLocation != null) {
             lat = mCurrentLocation.getLatitude();
             longi = mCurrentLocation.getLongitude();
+
             // editTextFirmName.setText("Lat: " + mCurrentLocation.getLatitude() + ", " +"Lng: " + mCurrentLocation.getLongitude()  );
 
             // giving a blink animation on TextView
@@ -515,7 +533,7 @@ public class MainActivity extends AppCompatActivity {
                         //noinspection MissingPermission
                         mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
                         updateLocationUI();
-                    }
+                             }
                 })
                 .addOnFailureListener(this, new OnFailureListener() {
                     @Override

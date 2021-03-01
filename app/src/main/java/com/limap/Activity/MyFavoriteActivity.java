@@ -256,7 +256,6 @@ public class MyFavoriteActivity extends AppCompatActivity {
                     public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
                     {
                        // progressDialog.dismiss();
-                        Log.e("favvvvvv", "onResponse: "+response.body().get(0).toString() );
                         List<SetterAllPostDetails> datumList1 = response.body();
 
                         if(datumList1.size()>0) {
