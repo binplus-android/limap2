@@ -95,7 +95,8 @@ public interface APIService {
     @POST("api_get_all_post.php")
     Call<List<SetterAllPostDetails>> homePostAll(
             @Field("lat") double lat,
-            @Field("longi") double longi
+            @Field("longi") double longi,
+            @Field("page") String page
     );
 
 
@@ -104,7 +105,8 @@ public interface APIService {
     Call<List<SetterAllPostDetails>> categoryPostAll(
             @Field("lat") double lat,
             @Field("longi") double longi,
-            @Field("category") String category
+            @Field("category") String category,
+            @Field("page") String page
     );
 
     @FormUrlEncoded
@@ -112,7 +114,8 @@ public interface APIService {
     Call<List<SetterAllPostDetails>> myPostDetails(
             @Field("lat") double lat,
             @Field("longi") double longi,
-            @Field("app_user_id") String app_user_id
+            @Field("app_user_id") String app_user_id,
+            @Field("page") String page
     );
 
     @FormUrlEncoded
@@ -120,14 +123,16 @@ public interface APIService {
     Call<List<SetterAllPostDetails>> myFavourite(
             @Field("app_user_id") String app_user_id,
             @Field("lat") double lat,
-            @Field("longi") double longi
+            @Field("longi") double longi,
+            @Field("page") String page
     );
 
     @FormUrlEncoded
     @POST("api_get_doctor_list.php")
     Call<List<SetterDoctorList>> doctorList(
             @Field("lat") double lat,
-            @Field("longi") double longi
+            @Field("longi") double longi,
+            @Field("page") String page
     );
 
 

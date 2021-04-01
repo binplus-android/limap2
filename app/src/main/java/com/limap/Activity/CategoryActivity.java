@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -71,6 +72,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class CategoryActivity extends AppCompatActivity
 {
+    private final String TAG=CategoryActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeContainer;;
 
     private RecyclerView recyclerView;
@@ -110,6 +112,17 @@ public class CategoryActivity extends AppCompatActivity
     private Boolean mRequestingLocationUpdates=false;
     private BottomNavigationView navigation1;
     Toolbar toolbar;
+
+    // for scrolls
+    boolean continue_request;
+    int page = 0;
+    private int currentVisibleItemCount;
+    private int currentFirstVisibleItem;
+    private int totalItem;
+    LinearLayoutManager manager ;
+    List<SetterAllPostDetails> datumList1;
+    private boolean shouldRefreshOnResume = false;
+    private boolean isFirst = true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +130,7 @@ public class CategoryActivity extends AppCompatActivity
         toolbar     =   findViewById(R.id.toolbar);
 
         Bundle b = getIntent().getExtras();
-
+       datumList1=new ArrayList<>();
         category = "";
         if (b != null) {
             category = b.getString("category");
@@ -141,13 +154,9 @@ public class CategoryActivity extends AppCompatActivity
             @Override
             public void onRefresh() {
 
-                index = 0;
-
-                //     jsonArray = null;
-
-                readAdds();
-
-                loadMore = false;
+                page=0;
+                datumList1.clear();
+                readAddsWithPaging(page);
 
             }
         });
@@ -192,19 +201,32 @@ public class CategoryActivity extends AppCompatActivity
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); //if recycler size is fixed
         //RecyclerView Layout
-        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(llm);
-        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
+        manager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolledToEnd() {
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                    continue_request=true;
+                }
+            }
 
-                if (loadMore) {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                currentFirstVisibleItem = manager.findFirstVisibleItemPosition();
+                currentVisibleItemCount = manager.getChildCount();
+                totalItem = manager.getItemCount();
 
-                    index += 10;
-
-                    readAdds();
-
-                    loadMore = false;
+                if (continue_request && (currentFirstVisibleItem + currentVisibleItemCount == totalItem)) {
+                    continue_request = false;
+                    page = page + 1;
+                    Log.e(TAG, "onScrolled: "+page );
+                    readAddsWithPaging(page);
 
                 }
             }
@@ -218,10 +240,10 @@ public class CategoryActivity extends AppCompatActivity
         restoreValuesFromBundle(savedInstanceState);
         dexter();
         startLocationUpdates();
-        readAdds();
+        readAddsWithPaging(page);
     }
 
-    private void readAdds() {
+    private void readAddsWithPaging(int pg) {
         cnt++;
         //final ProgressDialog progressDialog = new ProgressDialog(this);
         //progressDialog.setMessage("Wait...");
@@ -229,7 +251,6 @@ public class CategoryActivity extends AppCompatActivity
         try {
 
             if (BaseController.isNetworkAvailable(getApplicationContext())) {
-                swipeContainer.setRefreshing(true);
 
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 // set your desired log level
@@ -246,46 +267,33 @@ public class CategoryActivity extends AppCompatActivity
                         .build();
 
                 APIService service = retrofit.create(APIService.class);
-                Call<List<SetterAllPostDetails>> call = service.categoryPostAll(lat,longi,category);
+                Call<List<SetterAllPostDetails>> call = service.categoryPostAll(lat,longi,category,String.valueOf(page));
                 call.enqueue(new Callback<List<SetterAllPostDetails>>()
                 {
                     @Override
                     public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
                     {
-                       // progressDialog.dismiss();
+                        // progressDialog.dismiss();
 
-                        List<SetterAllPostDetails> datumList1 = response.body();
+                        continue_request=false;
+                        datumList1.addAll(response.body());
                         if(datumList1.size()>0) {
                             recyclerView.setVisibility(View.VISIBLE);
-                            recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
-                            RecyclerView.LayoutManager recyce = new LinearLayoutManager(getApplicationContext());
-
-                            recyclerView.setLayoutManager(recyce);
-                            recyclerView.setItemAnimator(new DefaultItemAnimator());
-                            recyclerView.setAdapter(recyclerAdapter);
                             recyclerAdapter.notifyDataSetChanged();
+                           if(swipeContainer.isRefreshing()){
+                               swipeContainer.setRefreshing(false);
+                           }
 
-                            swipeContainer.setRefreshing(false);
                         }
-                        else
-                        {
-                                if(cnt<=5) {
-                                    readAdds();
-                                }
-                                else
-                                {
-                                    swipeContainer.setRefreshing(false);
-                                   // progressDialog.dismiss();
-                                    recyclerView.setVisibility(View.GONE);
-                                }
+                        else{
 
                         }
                     }
                     @Override
                     public void onFailure(Call<List<SetterAllPostDetails>> call, Throwable t)
                     {
-                     //   progressDialog.dismiss();
-                     //   Toast.makeText(getApplicationContext(),"Invalid contact number", Toast.LENGTH_LONG).show();
+                        //   progressDialog.dismiss();
+                        //   Toast.makeText(getApplicationContext(),"Invalid contact number", Toast.LENGTH_LONG).show();
                     }
                 });
 
@@ -301,7 +309,6 @@ public class CategoryActivity extends AppCompatActivity
             Log.e("ERORR", "" + e);
         }
     }
-
 
 
     @Override

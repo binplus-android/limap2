@@ -13,6 +13,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -70,6 +71,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class DoctorListActivity extends AppCompatActivity {
+    private final String TAG=DoctorListActivity.class.getSimpleName();
     private SwipeRefreshLayout swipeContainer;;
 
     private RecyclerView recyclerView;
@@ -108,6 +110,15 @@ public class DoctorListActivity extends AppCompatActivity {
     // boolean flag to toggle the ui
     private Boolean mRequestingLocationUpdates=false;
     Toolbar toolbar;
+
+    // for scrolls
+    boolean continue_request;
+    int page = 0;
+    private int currentVisibleItemCount;
+    private int currentFirstVisibleItem;
+    private int totalItem;
+    LinearLayoutManager manager ;
+    List<SetterDoctorList> datumList1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -123,7 +134,7 @@ public class DoctorListActivity extends AppCompatActivity {
             }
         });
         Bundle b = getIntent().getExtras();
-
+        datumList1=new ArrayList<>();
         category = "";
         if (b != null) {
 
@@ -138,10 +149,10 @@ public class DoctorListActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                index = 0;
-                //     jsonArray = null;
-                readAdds();
-                loadMore = false;
+                page=0;
+                datumList1.clear();
+                readAddsWithPaging(page);
+
             }
         });
 
@@ -185,25 +196,36 @@ public class DoctorListActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true); //if recycler size is fixed
         //RecyclerView Layout
-        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(llm);
-//        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
-//            @Override
-//            public void onScrolledToEnd() {
-//
-//                if (loadMore) {
-//
-//                    index += 10;
-//
-//                    readAdds();
-//
-//                    loadMore = false;
-//
-//                }
-//            }
-//        });
+        manager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerAdapter = new DoctorRVAdapter(datumList1, getApplicationContext());
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                    continue_request=true;
+                }
+            }
 
-        // jsonArray = null;
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                currentFirstVisibleItem = manager.findFirstVisibleItemPosition();
+                currentVisibleItemCount = manager.getChildCount();
+                totalItem = manager.getItemCount();
+
+                if (continue_request && (currentFirstVisibleItem + currentVisibleItemCount == totalItem)) {
+                    continue_request = false;
+                    page = page + 1;
+                    Log.e(TAG, "onScrolled: "+page );
+                    readAddsWithPaging(page);
+
+                }
+            }
+        });
         index = 0;
 
         init();
@@ -211,18 +233,16 @@ public class DoctorListActivity extends AppCompatActivity {
         restoreValuesFromBundle(savedInstanceState);
         dexter();
         startLocationUpdates();
-        readAdds();
+       readAddsWithPaging(page);
     }
 
-    private void readAdds() {
+    private void readAddsWithPaging(int pg) {
         cnt++;
       //  final ProgressDialog progressDialog = new ProgressDialog(this);
       //  progressDialog.setMessage("Wait...");
       //  progressDialog.show();
         try {
             if (BaseController.isNetworkAvailable(getApplicationContext())) {
-                swipeContainer.setRefreshing(true);
-
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 // set your desired log level
                 logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -238,7 +258,7 @@ public class DoctorListActivity extends AppCompatActivity {
                         .build();
 
                 APIService service = retrofit.create(APIService.class);
-                Call<List<SetterDoctorList>> call = service.doctorList(lat,longi);
+                Call<List<SetterDoctorList>> call = service.doctorList(lat,longi,String.valueOf(page));
                 call.enqueue(new Callback<List<SetterDoctorList>>()
                 {
                     @Override
@@ -246,27 +266,19 @@ public class DoctorListActivity extends AppCompatActivity {
                     {
                      //   progressDialog.dismiss();
 
-                        List<SetterDoctorList> datumList1 = response.body();
+                        continue_request=false;
+                        datumList1.addAll(response.body());
                         if(datumList1.size()>0) {
                             recyclerView.setVisibility(View.VISIBLE);
-                            recyclerAdapter = new DoctorRVAdapter(datumList1, getApplicationContext());
-                            RecyclerView.LayoutManager recyce = new LinearLayoutManager(getApplicationContext());
-                            recyclerView.setLayoutManager(recyce);
-                            recyclerView.setItemAnimator(new DefaultItemAnimator());
-                            recyclerView.setAdapter(recyclerAdapter);
                             recyclerAdapter.notifyDataSetChanged();
-                            swipeContainer.setRefreshing(false);
+                            if(swipeContainer.isRefreshing()){
+                                swipeContainer.setRefreshing(false);
+                            }
+
                         }
                         else
                         {
-                            if(cnt<=5) {
-                                readAdds();
-                            }
-                            else {
-                                swipeContainer.setRefreshing(false);
-                                //     progressDialog.dismiss();
-                                recyclerView.setVisibility(View.GONE);
-                            }
+
                         }
                     }
                     @Override

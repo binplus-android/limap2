@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -135,6 +136,17 @@ public class MainActivity extends AppCompatActivity {
     Resources resources;
     private String lang;
     private String lang_code;
+    // for scrolls
+    boolean continue_request;
+    int page = 0;
+    private int currentVisibleItemCount;
+    private int currentFirstVisibleItem;
+    private int totalItem;
+    LinearLayoutManager manager ;
+
+    private boolean shouldRefreshOnResume = false;
+    private boolean isFirst = true;
+    List<SetterAllPostDetails> datumList1;
 
 
     @Override
@@ -150,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
         //setting the title
         toolbar.setTitle(getString(R.string.app_name));
+        datumList1=new ArrayList<>();
        // if(!Pref.getInstance(getApplicationContext()).getLANGUAGE().equals("")) {
 
       //  context = LocaleHelper.setLocale(MainActivity.this, lang_code);
@@ -165,14 +178,15 @@ public class MainActivity extends AppCompatActivity {
         startLocationUpdates();
         if(lat!=0.0 &&  longi!=0.0){
             index = 0;
-            readAdds();
+            page=0;
+            readAddsWithPaging(page);
         }else{
             Handler handler=new Handler();
             Runnable r=new Runnable() {
                 @Override
                 public void run() {
-                    index = 0;
-                    readAdds();
+                    page=0;
+                    readAddsWithPaging(page);
 
                 }
             };
@@ -199,12 +213,43 @@ public class MainActivity extends AppCompatActivity {
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                page=0;
+                datumList1.clear();
+                readAddsWithPaging(page);
 
-                index = 0;
-                //  jsonArray = null;
-                readAdds();
-                loadMore = false;
+            }
+        });
+        recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true); //if recycler size is fixed
+        //RecyclerView Layout
+        manager = new LinearLayoutManager(getApplicationContext());
+        recyclerView.setLayoutManager(manager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerAdapter = new HomeRVAdapter(datumList1, getApplicationContext());
+        recyclerView.setAdapter(recyclerAdapter);
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if(newState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                    continue_request=true;
+                }
+            }
 
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                currentFirstVisibleItem = manager.findFirstVisibleItemPosition();
+                currentVisibleItemCount = manager.getChildCount();
+                totalItem = manager.getItemCount();
+
+                if (continue_request && (currentFirstVisibleItem + currentVisibleItemCount == totalItem)) {
+                    continue_request = false;
+                    page = page + 1;
+                    Log.e(TAG, "onScrolled: "+page );
+                    readAddsWithPaging(page);
+
+                }
             }
         });
 
@@ -219,11 +264,7 @@ public class MainActivity extends AppCompatActivity {
         ox=findViewById(R.id.ox);
         doctor=findViewById(R.id.doctor);
         //list of history
-        recyclerView = findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true); //if recycler size is fixed
-        //RecyclerView Layout
-        LinearLayoutManager llm = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(llm);
+
 //        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
 //            @Override
 //            public void onScrolledToEnd() {
@@ -361,16 +402,107 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void readAdds() {
+//    private void readAdds() {
+//
+//        cnt++;
+//      //  final ProgressDialog progressDialog = new ProgressDialog(this);
+//      //  progressDialog.setMessage("Wait...");
+//     //   progressDialog.show();
+//        try {
+//
+//            if (BaseController.isNetworkAvailable(getApplicationContext())) {
+//                swipeContainer.setRefreshing(true);
+//
+//                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+//                // set your desired log level
+//                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+//                //   OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+//                // add your other interceptors …
+//                OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+//                httpClient.connectTimeout(3000, TimeUnit.SECONDS);
+//                httpClient.readTimeout(3000, TimeUnit.SECONDS);
+//                httpClient.writeTimeout(3000, TimeUnit.SECONDS);
+//                // add logging as last interceptor
+//                httpClient.addInterceptor(logging);  // <-- this is the important line
+//
+//                Retrofit retrofit = new Retrofit.Builder()
+//                        .baseUrl(APIUrl.BASE_URL)
+//                        .addConverterFactory(GsonConverterFactory.create())
+//                        .client(httpClient.build())
+//                        .build();
+//
+//                APIService service = retrofit.create(APIService.class);
+//                Log.e(TAG, "readAdds: "+lat+" :: "+longi );
+//                Call<List<SetterAllPostDetails>> call = service.homePostAll(lat,longi);
+//                call.enqueue(new Callback<List<SetterAllPostDetails>>()
+//                {
+//                    @Override
+//                    public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
+//                    {
+//                     //   progressDialog.dismiss();
+//                        init();
+//                        startLocationUpdates();
+////                        Log.e("responseeee", "onResponse: "+response.toString() );
+//                       for(int i=0;i<response.body().size();i++){
+//                           Log.e("HOme_DAta", "onResponse: "+response.body().get(i).getDistance() );
+//                       }
+//
+//                        List<SetterAllPostDetails> datumList1 = response.body();
+//                        if(datumList1.size()>0) {
+//                            recyclerView.setVisibility(View.VISIBLE);
+//                            recyclerAdapter = new HomeRVAdapter(datumList1, getApplicationContext());
+//                            RecyclerView.LayoutManager recyce = new LinearLayoutManager(getApplicationContext());
+//
+//                            recyclerView.setLayoutManager(recyce);
+//                            recyclerView.setItemAnimator(new DefaultItemAnimator());
+//                            recyclerView.setAdapter(recyclerAdapter);
+//                            recyclerAdapter.notifyDataSetChanged();
+//
+//                            swipeContainer.setRefreshing(false);
+//                        }
+//                        else
+//                        {
+//                            if(cnt<=5) {
+//                                readAdds();
+//                            }
+//                            else
+//                            {
+//                                swipeContainer.setRefreshing(false);
+//                              //  progressDialog.dismiss();
+//                                recyclerView.setVisibility(View.GONE);
+//                            }
+//                        }
+//                    }
+//                    @Override
+//                    public void onFailure(Call<List<SetterAllPostDetails>> call, Throwable t)
+//                    {
+//                       // progressDialog.dismiss();
+//                     //   Toast.makeText(getApplicationContext(),"Invalid contact number", Toast.LENGTH_LONG).show();
+//                    }
+//                });
+//
+//            } else {
+//
+//                swipeContainer.setRefreshing(false);
+//                recyclerView.setVisibility(View.GONE);
+//                //emptyview.setVisibility(View.VISIBLE);
+//                Toast.makeText(getApplicationContext(), "Connect to network and refresh", Toast.LENGTH_SHORT).show();
+//            }
+//        } catch (Exception e) {
+//            swipeContainer.setRefreshing(false);
+//            Log.e("ERORR", "" + e);
+//        }
+//    }
+    private void readAddsWithPaging(int page) {
 
         cnt++;
-      //  final ProgressDialog progressDialog = new ProgressDialog(this);
-      //  progressDialog.setMessage("Wait...");
-     //   progressDialog.show();
+        //  final ProgressDialog progressDialog = new ProgressDialog(this);
+        //  progressDialog.setMessage("Wait...");
+        //   progressDialog.show();
         try {
 
             if (BaseController.isNetworkAvailable(getApplicationContext())) {
-                swipeContainer.setRefreshing(true);
+//                swipeContainer.setRefreshing(true);
 
                 HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
                 // set your desired log level
@@ -392,51 +524,44 @@ public class MainActivity extends AppCompatActivity {
 
                 APIService service = retrofit.create(APIService.class);
                 Log.e(TAG, "readAdds: "+lat+" :: "+longi );
-                Call<List<SetterAllPostDetails>> call = service.homePostAll(lat,longi);
+                Call<List<SetterAllPostDetails>> call = service.homePostAll(lat,longi,String.valueOf(page));
                 call.enqueue(new Callback<List<SetterAllPostDetails>>()
                 {
                     @Override
                     public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
                     {
-                     //   progressDialog.dismiss();
+                        //   progressDialog.dismiss();
                         init();
                         startLocationUpdates();
-//                        Log.e("responseeee", "onResponse: "+response.toString() );
-                       for(int i=0;i<response.body().size();i++){
-                           Log.e("HOme_DAta", "onResponse: "+response.body().get(i).getDistance() );
-                       }
-
-                        List<SetterAllPostDetails> datumList1 = response.body();
+                        continue_request=false;
+                        datumList1.addAll(response.body());
                         if(datumList1.size()>0) {
                             recyclerView.setVisibility(View.VISIBLE);
-                            recyclerAdapter = new HomeRVAdapter(datumList1, getApplicationContext());
-                            RecyclerView.LayoutManager recyce = new LinearLayoutManager(getApplicationContext());
-
-                            recyclerView.setLayoutManager(recyce);
-                            recyclerView.setItemAnimator(new DefaultItemAnimator());
-                            recyclerView.setAdapter(recyclerAdapter);
                             recyclerAdapter.notifyDataSetChanged();
+                            if(swipeContainer.isRefreshing()){
+                                swipeContainer.setRefreshing(false);
+                            }
 
-                            swipeContainer.setRefreshing(false);
                         }
                         else
                         {
-                            if(cnt<=5) {
-                                readAdds();
-                            }
-                            else
-                            {
-                                swipeContainer.setRefreshing(false);
-                              //  progressDialog.dismiss();
-                                recyclerView.setVisibility(View.GONE);
-                            }
+//                            if(cnt<=5) {
+//                                page=0;
+//                                readAddsWithPaging(page);
+//                            }
+//                            else
+//                            {
+//                                swipeContainer.setRefreshing(false);
+//                                //  progressDialog.dismiss();
+//                                recyclerView.setVisibility(View.GONE);
+//                            }
                         }
                     }
                     @Override
                     public void onFailure(Call<List<SetterAllPostDetails>> call, Throwable t)
                     {
-                       // progressDialog.dismiss();
-                     //   Toast.makeText(getApplicationContext(),"Invalid contact number", Toast.LENGTH_LONG).show();
+                        // progressDialog.dismiss();
+                        //   Toast.makeText(getApplicationContext(),"Invalid contact number", Toast.LENGTH_LONG).show();
                     }
                 });
 
