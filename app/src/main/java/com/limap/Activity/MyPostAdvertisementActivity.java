@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -60,6 +62,7 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -92,6 +95,7 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
     private String mLastUpdateTime;
     private Double lat=0.0;
     private Double longi=0.0;
+    private  String pincode ="";
     // location updates interval - 10sec
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     // fastest updates interval - 5 sec
@@ -141,9 +145,9 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
         datumList1=new ArrayList<>();
         init();
         // restore the values from saved instance state
-        restoreValuesFromBundle(savedInstanceState);
-        dexter();
-        startLocationUpdates();
+//        restoreValuesFromBundle(savedInstanceState);
+//        dexter();
+//        startLocationUpdates();
 
 
         swipeContainer = findViewById(R.id.swipeContainer);
@@ -367,27 +371,43 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
      * Update the UI displaying the location data
      * and toggling the buttons
      */
-    private void updateLocationUI()
-    {
-        if (mCurrentLocation != null)
-        {
-            lat     =   mCurrentLocation.getLatitude();
-            longi   =   mCurrentLocation.getLongitude();
-            Log.e("updateLocationUI: ","Lat: " + mCurrentLocation.getLatitude() + ", " +"Lng: " + mCurrentLocation.getLongitude()  );
+    private void updateLocationUI() {
+        if (mCurrentLocation != null) {
+            lat = mCurrentLocation.getLatitude();
+            longi = mCurrentLocation.getLongitude();
+            List<Address> addresses = getMapAddress();
+            if (addresses.size() > 0) {
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
 
-            // giving a blink animation on TextView
-            // editTextFirmName.setAlpha(0);
-            //  editTextFirmName.animate().alpha(1).setDuration(300);
+                pincode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
 
-            // location last updated time
-            //    editTextContactName.setText("Last updated on: " + mLastUpdateTime);
+            }
+            Log.e("location", "lat--"+lat+"--long---"+longi +"---pin---"+pincode);
+            Pref.getInstance(getApplicationContext()).setLocation(String.valueOf(lat),String.valueOf(longi),pincode);
+            stopLocationUpdates();
+
         }
     }
-    /**
-     * Starting location updates
-     * Check whether location settings are satisfied and then
-     * location updates will be requested
-     */
+    private List<Address> getMapAddress() {
+        List<Address> addresses = new ArrayList<>();
+        String zip = "";
+        try {
+            Geocoder geocoder = new Geocoder(MyPostAdvertisementActivity.this, Locale.getDefault());
+
+            addresses = geocoder.getFromLocation(lat, longi, 1);
+            String address = addresses.get(0).getAddressLine(0);
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            zip = addresses.get(0).getPostalCode();
+            String country = addresses.get(0).getCountryName();
+            Log.e("map_data_main", "getMapAddress: " + "" + address + "\n" + city + "\n" + state + "\n" + zip + "\n" + country);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return addresses;
+
+    }
 
     private void startLocationUpdates()
     {

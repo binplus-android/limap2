@@ -20,6 +20,8 @@ import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
@@ -36,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
@@ -67,6 +70,7 @@ import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
+import com.limap.Adapter.HomeAdapter;
 import com.limap.Adapter.HomeRVAdapter;
 import com.limap.BaseController;
 import com.limap.BuildConfig;
@@ -101,7 +105,8 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager recyclerViewlayoutManager;
     ArrayList<SetterAllPostDetails> listing;
-    HomeRVAdapter recyclerAdapter;
+    HomeAdapter recyclerAdapter;
+    ProgressBar progressBar;
 
     //public JSONArray jsonArray;
     private LinearLayout cow,buffalo,ox,doctor;
@@ -112,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
     private String mLastUpdateTime;
     private Double lat = 0.0;
     private Double longi = 0.0;
+    private String pincode = "";
     // location updates interval - 10sec
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     // fastest updates interval - 5 sec
@@ -159,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //getting the toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
+        progressBar = findViewById(R.id.pbar);
         //setting the title
         toolbar.setTitle(getString(R.string.app_name));
         datumList1=new ArrayList<>();
@@ -170,12 +176,13 @@ public class MainActivity extends AppCompatActivity {
 
         //placing toolbar in place of actionbar
        // setSupportActionBar(toolbar);
-        init();
-        requestStoragePermission();
+
+//        requestStoragePermission();
         // restore the values from saved instance state
-        restoreValuesFromBundle(savedInstanceState);
-        dexter();
-        startLocationUpdates();
+//        restoreValuesFromBundle(savedInstanceState);
+        init();
+//        dexter();
+//        startLocationUpdates();
         if(lat!=0.0 &&  longi!=0.0){
             index = 0;
             page=0;
@@ -225,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         manager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerAdapter = new HomeRVAdapter(datumList1, getApplicationContext());
+        recyclerAdapter = new HomeAdapter( getApplicationContext(),datumList1);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -402,181 +409,92 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-//    private void readAdds() {
-//
-//        cnt++;
-//      //  final ProgressDialog progressDialog = new ProgressDialog(this);
-//      //  progressDialog.setMessage("Wait...");
-//     //   progressDialog.show();
-//        try {
-//
-//            if (BaseController.isNetworkAvailable(getApplicationContext())) {
-//                swipeContainer.setRefreshing(true);
-//
-//                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-//                // set your desired log level
-//                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-//                //   OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-//                // add your other interceptors …
-//                OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-//                httpClient.connectTimeout(3000, TimeUnit.SECONDS);
-//                httpClient.readTimeout(3000, TimeUnit.SECONDS);
-//                httpClient.writeTimeout(3000, TimeUnit.SECONDS);
-//                // add logging as last interceptor
-//                httpClient.addInterceptor(logging);  // <-- this is the important line
-//
-//                Retrofit retrofit = new Retrofit.Builder()
-//                        .baseUrl(APIUrl.BASE_URL)
-//                        .addConverterFactory(GsonConverterFactory.create())
-//                        .client(httpClient.build())
-//                        .build();
-//
-//                APIService service = retrofit.create(APIService.class);
-//                Log.e(TAG, "readAdds: "+lat+" :: "+longi );
-//                Call<List<SetterAllPostDetails>> call = service.homePostAll(lat,longi);
-//                call.enqueue(new Callback<List<SetterAllPostDetails>>()
-//                {
-//                    @Override
-//                    public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
-//                    {
-//                     //   progressDialog.dismiss();
-//                        init();
-//                        startLocationUpdates();
-////                        Log.e("responseeee", "onResponse: "+response.toString() );
-//                       for(int i=0;i<response.body().size();i++){
-//                           Log.e("HOme_DAta", "onResponse: "+response.body().get(i).getDistance() );
-//                       }
-//
-//                        List<SetterAllPostDetails> datumList1 = response.body();
-//                        if(datumList1.size()>0) {
-//                            recyclerView.setVisibility(View.VISIBLE);
-//                            recyclerAdapter = new HomeRVAdapter(datumList1, getApplicationContext());
-//                            RecyclerView.LayoutManager recyce = new LinearLayoutManager(getApplicationContext());
-//
-//                            recyclerView.setLayoutManager(recyce);
-//                            recyclerView.setItemAnimator(new DefaultItemAnimator());
-//                            recyclerView.setAdapter(recyclerAdapter);
-//                            recyclerAdapter.notifyDataSetChanged();
-//
-//                            swipeContainer.setRefreshing(false);
-//                        }
-//                        else
-//                        {
-//                            if(cnt<=5) {
-//                                readAdds();
-//                            }
-//                            else
-//                            {
-//                                swipeContainer.setRefreshing(false);
-//                              //  progressDialog.dismiss();
-//                                recyclerView.setVisibility(View.GONE);
-//                            }
-//                        }
-//                    }
-//                    @Override
-//                    public void onFailure(Call<List<SetterAllPostDetails>> call, Throwable t)
-//                    {
-//                       // progressDialog.dismiss();
-//                     //   Toast.makeText(getApplicationContext(),"Invalid contact number", Toast.LENGTH_LONG).show();
-//                    }
-//                });
-//
-//            } else {
-//
-//                swipeContainer.setRefreshing(false);
-//                recyclerView.setVisibility(View.GONE);
-//                //emptyview.setVisibility(View.VISIBLE);
-//                Toast.makeText(getApplicationContext(), "Connect to network and refresh", Toast.LENGTH_SHORT).show();
-//            }
-//        } catch (Exception e) {
-//            swipeContainer.setRefreshing(false);
-//            Log.e("ERORR", "" + e);
-//        }
-//    }
-    private void readAddsWithPaging(int page) {
+        private void readAddsWithPaging(int page) {
+        progressBar.setVisibility(View.VISIBLE);
 
-        cnt++;
-        //  final ProgressDialog progressDialog = new ProgressDialog(this);
-        //  progressDialog.setMessage("Wait...");
-        //   progressDialog.show();
-        try {
+            cnt++;
+            //  final ProgressDialog progressDialog = new ProgressDialog(this);
+            //  progressDialog.setMessage("Wait...");
+            //   progressDialog.show();
+            try {
 
-            if (BaseController.isNetworkAvailable(getApplicationContext())) {
-//                swipeContainer.setRefreshing(true);
+                if (BaseController.isNetworkAvailable(getApplicationContext())) {
+    //                swipeContainer.setRefreshing(true);
 
-                HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
-                // set your desired log level
-                logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-                //   OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-                // add your other interceptors …
-                OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-                httpClient.connectTimeout(3000, TimeUnit.SECONDS);
-                httpClient.readTimeout(3000, TimeUnit.SECONDS);
-                httpClient.writeTimeout(3000, TimeUnit.SECONDS);
-                // add logging as last interceptor
-                httpClient.addInterceptor(logging);  // <-- this is the important line
+                    HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+                    // set your desired log level
+                    logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+                    //   OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+                    // add your other interceptors …
+                    OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+                    httpClient.connectTimeout(3000, TimeUnit.SECONDS);
+                    httpClient.readTimeout(3000, TimeUnit.SECONDS);
+                    httpClient.writeTimeout(3000, TimeUnit.SECONDS);
+                    // add logging as last interceptor
+                    httpClient.addInterceptor(logging);  // <-- this is the important line
 
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(APIUrl.BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .client(httpClient.build())
-                        .build();
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(APIUrl.BASE_URL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .client(httpClient.build())
+                            .build();
 
-                APIService service = retrofit.create(APIService.class);
-                Log.e(TAG, "readAdds: "+lat+" :: "+longi );
-                Call<List<SetterAllPostDetails>> call = service.homePostAll(lat,longi,String.valueOf(page));
-                call.enqueue(new Callback<List<SetterAllPostDetails>>()
-                {
-                    @Override
-                    public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
+                    APIService service = retrofit.create(APIService.class);
+                    Log.e(TAG, "readAdds: "+lat+" :: "+longi );
+                    Call<List<SetterAllPostDetails>> call = service.homePostAll(lat,longi,String.valueOf(page));
+                    call.enqueue(new Callback<List<SetterAllPostDetails>>()
                     {
-                        //   progressDialog.dismiss();
-                        init();
-                        startLocationUpdates();
-                        continue_request=false;
-                        datumList1.addAll(response.body());
-                        if(datumList1.size()>0) {
-                            recyclerView.setVisibility(View.VISIBLE);
-                            recyclerAdapter.notifyDataSetChanged();
-                            if(swipeContainer.isRefreshing()){
-                                swipeContainer.setRefreshing(false);
-                            }
-
-                        }
-                        else
+                        @Override
+                        public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
                         {
-//                            if(cnt<=5) {
-//                                page=0;
-//                                readAddsWithPaging(page);
-//                            }
-//                            else
-//                            {
-//                                swipeContainer.setRefreshing(false);
-//                                //  progressDialog.dismiss();
-//                                recyclerView.setVisibility(View.GONE);
-//                            }
+                            //   progressDialog.dismiss();
+    //                        init();
+    //                        startLocationUpdates();
+                            continue_request=false;
+                            datumList1.addAll(response.body());
+                            if(datumList1.size()>0) {
+                                recyclerView.setVisibility(View.VISIBLE);
+                                recyclerAdapter.notifyDataSetChanged();
+                                if(swipeContainer.isRefreshing()){
+                                    swipeContainer.setRefreshing(false);
+                                }
+
+                            }
+                            else
+                            {
+    //                            if(cnt<=5) {
+    //                                page=0;
+    //                                readAddsWithPaging(page);
+    //                            }
+    //                            else
+    //                            {
+    //                                swipeContainer.setRefreshing(false);
+    //                                //  progressDialog.dismiss();
+    //                                recyclerView.setVisibility(View.GONE);
+    //                            }
+                            }
                         }
-                    }
-                    @Override
-                    public void onFailure(Call<List<SetterAllPostDetails>> call, Throwable t)
-                    {
-                        // progressDialog.dismiss();
-                        //   Toast.makeText(getApplicationContext(),"Invalid contact number", Toast.LENGTH_LONG).show();
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<List<SetterAllPostDetails>> call, Throwable t)
+                        {
+                            // progressDialog.dismiss();
+                            //   Toast.makeText(getApplicationContext(),"Invalid contact number", Toast.LENGTH_LONG).show();
+                        }
+                    });
 
-            } else {
+                } else {
 
+                    swipeContainer.setRefreshing(false);
+                    recyclerView.setVisibility(View.GONE);
+                    //emptyview.setVisibility(View.VISIBLE);
+                    Toast.makeText(getApplicationContext(), "Connect to network and refresh", Toast.LENGTH_SHORT).show();
+                }
+            } catch (Exception e) {
                 swipeContainer.setRefreshing(false);
-                recyclerView.setVisibility(View.GONE);
-                //emptyview.setVisibility(View.VISIBLE);
-                Toast.makeText(getApplicationContext(), "Connect to network and refresh", Toast.LENGTH_SHORT).show();
+                Log.e("ERORR", "" + e);
             }
-        } catch (Exception e) {
-            swipeContainer.setRefreshing(false);
-            Log.e("ERORR", "" + e);
+            progressBar.setVisibility(View.GONE);
         }
-    }
 
     private void init() {
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -588,7 +506,12 @@ public class MainActivity extends AppCompatActivity {
                 // location is received
                 mCurrentLocation = locationResult.getLastLocation();
                 mLastUpdateTime = DateFormat.getTimeInstance().format(new Date());
-                updateLocationUI();
+                if (Double.parseDouble(Pref.getInstance(getApplicationContext()).getLATITUDE())!=lat
+                       && Double.parseDouble(Pref.getInstance(getApplicationContext()).getLONGITUDE())!=longi
+               && (!Pref.getInstance(getApplicationContext()).getPINCODE().equals(pincode))) {
+
+                    updateLocationUI();
+                }
             }
         };
 
@@ -618,7 +541,7 @@ public class MainActivity extends AppCompatActivity {
                 mLastUpdateTime = savedInstanceState.getString("last_updated_on");
             }
         }
-        updateLocationUI();
+//        updateLocationUI();
     }
 
     /**
@@ -629,16 +552,38 @@ public class MainActivity extends AppCompatActivity {
         if (mCurrentLocation != null) {
             lat = mCurrentLocation.getLatitude();
             longi = mCurrentLocation.getLongitude();
+            List<Address> addresses = getMapAddress();
+            if (addresses.size() > 0) {
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
 
-            // editTextFirmName.setText("Lat: " + mCurrentLocation.getLatitude() + ", " +"Lng: " + mCurrentLocation.getLongitude()  );
+                pincode = addresses.get(0).getPostalCode();
+                String knownName = addresses.get(0).getFeatureName();
 
-            // giving a blink animation on TextView
-            // editTextFirmName.setAlpha(0);
-            //  editTextFirmName.animate().alpha(1).setDuration(300);
+            }
+            Log.e("location", "lat--"+lat+"--long---"+longi +"---pin---"+pincode);
+            Pref.getInstance(getApplicationContext()).setLocation(String.valueOf(lat),String.valueOf(longi),pincode);
+            stopLocationUpdates();
 
-            // location last updated time
-            //    editTextContactName.setText("Last updated on: " + mLastUpdateTime);
         }
+    }
+    private List<Address> getMapAddress() {
+        List<Address> addresses = new ArrayList<>();
+        String zip = "";
+        try {
+            Geocoder geocoder = new Geocoder(MainActivity.this, Locale.getDefault());
+
+            addresses = geocoder.getFromLocation(lat, longi, 1);
+            String address = addresses.get(0).getAddressLine(0);
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            zip = addresses.get(0).getPostalCode();
+            String country = addresses.get(0).getCountryName();
+            Log.e("map_data_main", "getMapAddress: " + "" + address + "\n" + city + "\n" + state + "\n" + zip + "\n" + country);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return addresses;
+
     }
 
     /**

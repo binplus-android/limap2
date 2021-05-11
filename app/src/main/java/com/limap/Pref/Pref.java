@@ -12,6 +12,9 @@ public class Pref {
     private static final String MOBILE_NO  = "MOBILE_NO";
     private static final String LANGUAGE   = "LANGUAGE";
     private static final String CODE       = "CODE";
+    private static final String LATITUDE   = "LATITUDE";
+    private static final String LONGITUDE  = "LONGITUDE";
+    private static final String PINCODE    = "PINCODE";
 
 
     private SharedPreferences sharedPreferences;
@@ -60,4 +63,24 @@ public class Pref {
         return sharedPreferences.getString(CODE, "");
     }
 
+
+    public  void setLocation(String lat , String longi ,String pin)
+    {
+        editor.putString(LATITUDE, lat);
+        editor.putString(LONGITUDE, longi);
+        editor.putString(MOBILE_NO, pin);
+                editor.commit();
+    }
+
+    public  String getLATITUDE() {
+        return sharedPreferences.getString(LATITUDE, "");
+    }
+
+    public  String getLONGITUDE() {
+        return sharedPreferences.getString(LONGITUDE, "");
+    }
+
+    public  String getPINCODE() {
+        return sharedPreferences.getString(PINCODE, "");
+    }
 }
