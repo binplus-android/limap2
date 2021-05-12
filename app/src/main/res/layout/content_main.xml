@@ -10,10 +10,10 @@
         android:layout_height="match_parent"
         android:layout_marginTop="55dp"
         android:layout_marginBottom="58dp">
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fillViewport="true">
+<!--        <ScrollView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:fillViewport="true">-->
 
 
     <LinearLayout
@@ -140,17 +140,17 @@
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/colorBack"
-            android:orientation="vertical"
-            android:padding="4dp">
+<!--        <LinearLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:background="@color/colorBack"-->
+<!--            android:orientation="vertical"-->
+<!--            android:padding="4dp">-->
 
-            <FrameLayout
-                android:id="@+id/homeFrameLayout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<!--            <FrameLayout-->
+<!--                android:id="@+id/homeFrameLayout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
 
 
                     <RelativeLayout
@@ -161,7 +161,7 @@
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recyclerView"
-                        android:nestedScrollingEnabled="false"
+
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
                         <ProgressBar
@@ -176,9 +176,9 @@
 
 
 
-            </FrameLayout>
-        </LinearLayout>
+<!--            </FrameLayout>-->
+<!--        </LinearLayout>-->
     </LinearLayout>
-        </ScrollView>
+<!--        </ScrollView>-->
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </RelativeLayout>

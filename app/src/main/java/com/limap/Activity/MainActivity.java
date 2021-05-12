@@ -440,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
                             .build();
 
                     APIService service = retrofit.create(APIService.class);
-                    Log.e(TAG, "readAdds: "+lat+" :: "+longi );
+                    Log.e(TAG, "readAdds: "+lat+" :: "+longi +" ::"+page );
                     Call<List<SetterAllPostDetails>> call = service.homePostAll(lat,longi,String.valueOf(page));
                     call.enqueue(new Callback<List<SetterAllPostDetails>>()
                     {
