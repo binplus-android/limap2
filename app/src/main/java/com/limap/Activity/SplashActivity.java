@@ -1,14 +1,17 @@
 package com.limap.Activity;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,7 +20,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
@@ -54,10 +60,17 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import static android.Manifest.permission.ACCESS_COARSE_LOCATION;
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.Manifest.permission.CALL_PHONE;
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 public class SplashActivity extends AppCompatActivity {
     private Double lat = 0.0;
     private Double longi = 0.0;
-    private String pincode="";
+    private String pincode = "";
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = 5000;
     private static final int REQUEST_CHECK_SETTINGS = 100;
     private FusedLocationProviderClient mFusedLocationClient;
@@ -70,35 +83,62 @@ public class SplashActivity extends AppCompatActivity {
     private Boolean mRequestingLocationUpdates = false;
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     private String mLastUpdateTime;
+    int permsRequestCode = 200 ;
+    String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.WRITE_EXTERNAL_STORAGE",
+            "android.permission.READ_EXTERNAL_STORAGE", "android.permission.CAMERA", "android.permission.CALL_PHONE"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+
         init();
-        requestStoragePermission();
-//        delayedCall();
-        dexter();
-        startLocationUpdates();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
+        }
+
     }
 
-    private void delayedCall(){
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
+        }
+    }
+
+    private void delayedCall() {
 
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                Intent target = null;
+                if (Pref.getInstance(getApplicationContext()).getLANGUAGE().isEmpty()) {
+                    target = new Intent(getApplicationContext(), LanguageActivity.class);
 
-                if(Pref.getInstance(getApplicationContext()).getLANGUAGE().isEmpty()) {
-                    Intent target = new Intent(getApplicationContext(), LanguageActivity.class);
-                    startActivity(target);
-                }else {
+                } else {
 
-                    Intent target = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(target);
+                    target = new Intent(getApplicationContext(), MainActivity.class);
+
                 }
 
                 finish();
+                startActivity(target);
 
             }
         }, 0);
@@ -131,102 +171,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-    private void dexter() {
-        // Requesting ACCESS_FINE_LOCATION using Dexter library
-        Dexter.withActivity(this)
-                .withPermission(Manifest.permission.ACCESS_FINE_LOCATION)
-                .withListener(new PermissionListener() {
-                    @Override
-                    public void onPermissionGranted(PermissionGrantedResponse response) {
-                        mRequestingLocationUpdates = true;
-                        startLocationUpdates();
-                    }
-
-                    @Override
-                    public void onPermissionDenied(PermissionDeniedResponse response) {
-                        if (response.isPermanentlyDenied()) {
-                            // open device settings when the permission is
-                            // denied permanently
-                            openSettings();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(PermissionRequest permission, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).check();
-    }
-
-
-    private void requestStoragePermission() {
-        Dexter.withActivity(this)
-                .withPermissions(
-                        Manifest.permission.READ_EXTERNAL_STORAGE,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.ACCESS_FINE_LOCATION,
-                        Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.CAMERA)
-                .withListener(new MultiplePermissionsListener() {
-                    @Override
-                    public void onPermissionsChecked(MultiplePermissionsReport report) {
-                        // check if all permissions are granted
-                        if (report.areAllPermissionsGranted()) {
-                            //        Toast.makeText(getApplicationContext(), "All permissions are granted!", Toast.LENGTH_SHORT).show();
-                        }
-
-                        // check for permanent denial of any permission
-                        if (report.isAnyPermissionPermanentlyDenied()) {
-                            // show alert dialog navigating to Settings
-                            showSettingsDialog();
-                        }
-                    }
-
-                    @Override
-                    public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {
-                        token.continuePermissionRequest();
-                    }
-                }).
-                withErrorListener(new PermissionRequestErrorListener() {
-                    @Override
-                    public void onError(DexterError error) {
-                        Toast.makeText(getApplicationContext(), "Error occurred! ", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .onSameThread()
-                .check();
-    }
-    // navigating user to app settings
-    private void openSettings1() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", getPackageName(), null);
-        intent.setData(uri);
-        startActivityForResult(intent, 101);
-    }
-    private void showSettingsDialog()
-    {
-        AlertDialog.Builder builder = new AlertDialog.Builder(SplashActivity.this);
-        builder.setTitle("Need Permissions");
-        builder.setMessage("This app needs permission to use this feature. You can grant them in app settings.");
-        builder.setPositiveButton("GOTO SETTINGS", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.cancel();
-                openSettings1();
-            }
-        });
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                dialog.cancel();
-            }
-        });
-        builder.show();
-    }
-
     private void updateLocationUI() {
         if (mCurrentLocation != null) {
             lat = mCurrentLocation.getLatitude();
@@ -235,65 +179,61 @@ public class SplashActivity extends AppCompatActivity {
             if (addresses.size() > 0) {
                 String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
 
-              pincode = addresses.get(0).getPostalCode();
+                pincode = addresses.get(0).getPostalCode();
                 String knownName = addresses.get(0).getFeatureName();
 
             }
-            Log.e("location", "lat--"+lat+"--long---"+longi +"---pin---"+pincode);
-            Pref.getInstance(getApplicationContext()).setLocation(String.valueOf(lat),String.valueOf(longi),pincode);
+            Log.e("location", "lat--" + lat + "--long---" + longi + "---pin---" + pincode);
+            Pref.getInstance(getApplicationContext()).setLocation(String.valueOf(lat), String.valueOf(longi), pincode);
             stopLocationUpdates();
             delayedCall();
 
         }
     }
-    private void startLocationUpdates() {
-        mSettingsClient
-                .checkLocationSettings(mLocationSettingsRequest)
-                .addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
-                    @Override
-                    public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-                        Log.i("LOC", "All location settings are satisfied.");
-                        //    Toast.makeText(getApplicationContext(), "Started location updates!", Toast.LENGTH_SHORT).show();
-                        //noinspection MissingPermission
-                        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-                        updateLocationUI();
-                    }
-                })
-                .addOnFailureListener(this, new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        int statusCode = ((ApiException) e).getStatusCode();
-                        switch (statusCode) {
-                            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                                Log.i("LOCATION", "Location settings are not satisfied. Attempting to upgrade " +
-                                        "location settings ");
-                                try {
-                                    // Show the dialog by calling startResolutionForResult(), and check the
-                                    // result in onActivityResult().
-                                    ResolvableApiException rae = (ResolvableApiException) e;
-                                    rae.startResolutionForResult(SplashActivity.this, REQUEST_CHECK_SETTINGS);
-                                } catch (IntentSender.SendIntentException sie) {
-                                    Log.i("LOCATION", "Pending Intent unable to execute request.");
-                                }
-                                break;
-                            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                                String errorMessage = "Location settings are inadequate, and cannot be fixed here. Fix in Settings.";
-                                Log.e("LOCATION", errorMessage);
-                                Toast.makeText(SplashActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+
+    private void checkLocation() {
+        LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+        }
+
+        try {
+            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        } catch (Exception ex) {
+        }
+
+        if (!gps_enabled && !network_enabled) {
+            // notify user
+            new AlertDialog.Builder(SplashActivity.this)
+                    .setMessage("Location is not Enabled")
+                    .setPositiveButton("Go to Settings", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                            startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
                         }
-                        updateLocationUI();
-                    }
-                });
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        } else {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+            updateLocationUI();
+        }
     }
 
-    private void openSettings() {
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", BuildConfig.APPLICATION_ID, null);
-        intent.setData(uri);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-    }
 
     public void stopLocationUpdates() {
         // Removing location updates
@@ -325,6 +265,71 @@ public class SplashActivity extends AppCompatActivity {
         return addresses;
 
     }
+
+
+
+    private boolean checkPermission() {
+        int r = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_FINE_LOCATION);
+        int r1 = ContextCompat.checkSelfPermission(getApplicationContext(), ACCESS_COARSE_LOCATION);
+        int r2 = ContextCompat.checkSelfPermission(getApplicationContext(), CAMERA);
+        int r3 = ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE);
+        int r4 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
+        int r5 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
+
+        return r== PackageManager.PERMISSION_GRANTED && r1 == PackageManager.PERMISSION_GRANTED && r2== PackageManager.PERMISSION_GRANTED
+                && r3 == PackageManager.PERMISSION_GRANTED && r4 == PackageManager.PERMISSION_GRANTED && r5 ==PackageManager.PERMISSION_GRANTED;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(final int permsRequestCode, String[] permissions, int[] grantResults){
+
+        switch(permsRequestCode){
+
+            case 200:
+
+                boolean locationAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
+                boolean c_locAccepted = grantResults[1]==PackageManager.PERMISSION_GRANTED;
+                boolean readAccepted = grantResults[2]==PackageManager.PERMISSION_GRANTED;
+                boolean writeAccepted = grantResults[3]==PackageManager.PERMISSION_GRANTED;
+                boolean cameraAccepted = grantResults[4]==PackageManager.PERMISSION_GRANTED;
+                boolean callAccepted = grantResults[5]==PackageManager.PERMISSION_GRANTED;
+
+
+                if (locationAccepted && c_locAccepted&& readAccepted&& writeAccepted && cameraAccepted && callAccepted )
+                {
+//                   startLocationUpdates();
+                    checkPermission();
+                }
+                else
+                {
+//                    module.showErrorSnackBar(Splash_activity.this,"Accept Permissions to Continue");
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
+                            new AlertDialog.Builder(SplashActivity.this)
+                                    .setMessage("You need to allow access to both the permissions")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                requestPermissions(perms,
+                                                        permsRequestCode);
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("Cancel", null)
+                                    .show();
+
+                            return;
+                        }
+                    }
+                }
+                break;
+
+        }
+
+    }
+
 
 
 }

@@ -23,6 +23,8 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
      Context context;
@@ -68,7 +70,7 @@ holder.rv_items.addOnItemTouchListener(new RecyclerTouchListener(context, holder
     @Override
     public void onItemClick(View view, int position) {
         SetterAllPostDetails detailss = dataList.get(position);
-        Intent i = new Intent(view.getContext(), ViewAddActivity.class);
+        Intent i = new Intent(context, ViewAddActivity.class);
 
         i.putExtra("id",detailss.getTbl_add_post_data_id());
         i.putExtra("category",detailss.getCategory());
@@ -85,7 +87,8 @@ holder.rv_items.addOnItemTouchListener(new RecyclerTouchListener(context, holder
         //   i.putExtra("image4",details.getImage4());
         i.putExtra("image5",detailss.getImage5());
         //   i.putExtra("video1",details.getVideo1());
-        view.getContext().startActivity(i);
+        i.setFlags(FLAG_ACTIVITY_NEW_TASK);
+      context.startActivity(i);
 
     }
 
