@@ -20,6 +20,7 @@ import com.limap.Utils.RecyclerTouchListener;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,7 +47,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull  HomeAdapter.ViewHolder holder, int position) {
-        SetterAllPostDetails details = dataList.get(position);
+        final SetterAllPostDetails details = dataList.get(position);
         String vet  =   "";
         if(!details.getCategory().equals("ox")) {
             vet =  " ( " + details.getVariety() + " )";
@@ -63,42 +64,58 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         imageList.add(details.getImage3());
         imageList.add(details.getImage5());
         holder.rv_items.setLayoutManager(new LinearLayoutManager(context,RecyclerView.HORIZONTAL,false));
-        ItemImageAdapter imageAdapter = new ItemImageAdapter(imageList,context);
+        ItemImageAdapter imageAdapter = new ItemImageAdapter(imageList,context,details);
         holder.rv_items.setAdapter(imageAdapter);
 
-holder.rv_items.addOnItemTouchListener(new RecyclerTouchListener(context, holder.rv_items, new RecyclerTouchListener.OnItemClickListener() {
-    @Override
-    public void onItemClick(View view, int position) {
-        SetterAllPostDetails detailss = dataList.get(position);
-        Intent i = new Intent(context, ViewAddActivity.class);
+//holder.rv_items.addOnItemTouchListener(new RecyclerTouchListener(context, holder.rv_items, new RecyclerTouchListener.OnItemClickListener() {
+//    @Override
+//    public void onItemClick(View view, int position) {
+//
+//        Intent i = new Intent(context, ViewAddActivity.class);
+//
+//        i.putExtra("id",details.getTbl_add_post_data_id());
+//        i.putExtra("category",details.getCategory());
+//        i.putExtra("mobile_no",details.getMobile_no());
+//        i.putExtra("speciality",details.getSpeciality());
+//        i.putExtra("variety",details.getVariety());
+//        i.putExtra("age",details.getAge());
+//        i.putExtra("vet",details.getVet());
+//        i.putExtra("milkhistory",details.getLastmilkhistory());
+//        i.putExtra("description",details.getDescription());
+//        i.putExtra("image1",details.getImage1());
+//        i.putExtra("image2",details.getImage2());
+//        i.putExtra("image3",details.getImage3());
+//        //   i.putExtra("image4",details.getImage4());
+//        i.putExtra("image5",details.getImage5());
+//        i.putExtra("model",(Serializable) details);
+//        //   i.putExtra("video1",details.getVideo1());
+//        i.setFlags(FLAG_ACTIVITY_NEW_TASK);
+//      context.startActivity(i);
+//
+//    }
+//
+//    @Override
+//    public void onLongItemClick(View view, int position) {
+//
+//    }
+//}));
 
-        i.putExtra("id",detailss.getTbl_add_post_data_id());
-        i.putExtra("category",detailss.getCategory());
-        i.putExtra("mobile_no",detailss.getMobile_no());
-        i.putExtra("speciality",detailss.getSpeciality());
-        i.putExtra("variety",detailss.getVariety());
-        i.putExtra("age",detailss.getAge());
-        i.putExtra("vet",detailss.getVet());
-        i.putExtra("milkhistory",detailss.getLastmilkhistory());
-        i.putExtra("description",detailss.getDescription());
-        i.putExtra("image1",detailss.getImage1());
-        i.putExtra("image2",detailss.getImage2());
-        i.putExtra("image3",detailss.getImage3());
-        //   i.putExtra("image4",details.getImage4());
-        i.putExtra("image5",detailss.getImage5());
-        //   i.putExtra("video1",details.getVideo1());
-        i.setFlags(FLAG_ACTIVITY_NEW_TASK);
-      context.startActivity(i);
 
     }
 
     @Override
-    public void onLongItemClick(View view, int position) {
-
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(hasStableIds);
     }
-}));
 
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
 
+    @Override
+    public long getItemId(int position) {
+        return super.getItemId(position);
     }
 
     @Override
@@ -124,10 +141,12 @@ holder.rv_items.addOnItemTouchListener(new RecyclerTouchListener(context, holder
 
        ArrayList<String> imgList;
        Context context ;
+       SetterAllPostDetails setterAllPostDetails;
 
-       public ItemImageAdapter(ArrayList<String> imgList, Context context) {
+       public ItemImageAdapter(ArrayList<String> imgList, Context context ,SetterAllPostDetails setterAllPostDetails) {
            this.imgList = imgList;
            this.context = context;
+           this.setterAllPostDetails = setterAllPostDetails;
        }
 
        @NonNull
@@ -150,6 +169,30 @@ holder.rv_items.addOnItemTouchListener(new RecyclerTouchListener(context, holder
                @Override
                public void onError() {
 
+               }
+           });
+           holder.imageView.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   Intent i = new Intent(context, ViewAddActivity.class);
+                   i.putExtra("id",setterAllPostDetails.getTbl_add_post_data_id());
+        i.putExtra("category",setterAllPostDetails.getCategory());
+        i.putExtra("mobile_no",setterAllPostDetails.getMobile_no());
+        i.putExtra("speciality",setterAllPostDetails.getSpeciality());
+        i.putExtra("variety",setterAllPostDetails.getVariety());
+        i.putExtra("age",setterAllPostDetails.getAge());
+        i.putExtra("vet",setterAllPostDetails.getVet());
+        i.putExtra("milkhistory",setterAllPostDetails.getLastmilkhistory());
+        i.putExtra("description",setterAllPostDetails.getDescription());
+        i.putExtra("image1",setterAllPostDetails.getImage1());
+        i.putExtra("image2",setterAllPostDetails.getImage2());
+        i.putExtra("image3",setterAllPostDetails.getImage3());
+        //   i.putExtra("image4",setterAllPostDetails.getImage4());
+        i.putExtra("image5",setterAllPostDetails.getImage5());
+        i.putExtra("model",(Serializable) setterAllPostDetails);
+        //   i.putExtra("video1",details.getVideo1());
+                   i.setFlags(FLAG_ACTIVITY_NEW_TASK);
+                   context.startActivity(i);
                }
            });
            

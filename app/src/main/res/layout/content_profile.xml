@@ -44,7 +44,7 @@
                         android:ellipsize="end"
                         android:gravity="center_horizontal"
                         android:singleLine="true"
-                        android:text="@string/title_profile_name"
+
                         android:textColor="@color/colorWhite"
                         android:textSize="18sp"
                         android:textStyle="bold" />

@@ -20,6 +20,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -57,6 +59,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.limap.Adapter.CategoryAddRVAdapter;
+import com.limap.Adapter.HomeAdapter;
 import com.limap.Adapter.HomeRVAdapter;
 import com.limap.BaseController;
 import com.limap.BuildConfig;
@@ -95,8 +98,9 @@ public class CategoryActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerViewlayoutManager;
     private ArrayList<SetterAllPostDetails> listing;
-    private CategoryAddRVAdapter recyclerAdapter;
-
+//    private CategoryAddRVAdapter recyclerAdapter;
+    private HomeAdapter recyclerAdapter;
+    ProgressBar progressBar;
     //public JSONArray jsonArray;
 
     private boolean loadMore = true;
@@ -130,7 +134,7 @@ public class CategoryActivity extends AppCompatActivity
     private Boolean mRequestingLocationUpdates=false;
     private BottomNavigationView navigation1;
     Toolbar toolbar;
-
+    RelativeLayout rel_sell;
     // for scrolls
     boolean continue_request;
     int page = 0;
@@ -152,6 +156,8 @@ public class CategoryActivity extends AppCompatActivity
 
         Bundle b = getIntent().getExtras();
        datumList1=new ArrayList<>();
+        lat = Double.valueOf(Pref.getInstance(CategoryActivity.this).getLATITUDE());
+        longi = Double.valueOf(Pref.getInstance(CategoryActivity.this).getLONGITUDE());
         category = "";
         if (b != null) {
             category = b.getString("category");
@@ -170,6 +176,7 @@ public class CategoryActivity extends AppCompatActivity
             }
         });
         swipeContainer = findViewById(R.id.swipeContainer);
+        progressBar = findViewById(R.id.pbar);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -181,6 +188,15 @@ public class CategoryActivity extends AppCompatActivity
 
             }
         });
+        rel_sell = findViewById(R.id.rel_sell);
+        rel_sell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent b = new Intent(CategoryActivity.this, CheckPostActivity.class);
+                startActivity(b);
+            }
+        });
+
         navigation1 = (BottomNavigationView) findViewById(R.id.navigation);
         navigation1.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -225,7 +241,8 @@ public class CategoryActivity extends AppCompatActivity
         manager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
+//        recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
+        recyclerAdapter = new HomeAdapter( getApplicationContext(),datumList1);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -268,6 +285,7 @@ public class CategoryActivity extends AppCompatActivity
 
     private void readAddsWithPaging(int pg) {
         cnt++;
+        progressBar.setVisibility(View.VISIBLE);
         //final ProgressDialog progressDialog = new ProgressDialog(this);
         //progressDialog.setMessage("Wait...");
         //progressDialog.show();
@@ -290,15 +308,14 @@ public class CategoryActivity extends AppCompatActivity
                         .build();
 
                 APIService service = retrofit.create(APIService.class);
+//                Double.parseDouble("19.7754276"),Double.parseDouble("74.0348058")
                 Call<List<SetterAllPostDetails>> call = service.categoryPostAll(lat,longi,category,String.valueOf(page));
                 call.enqueue(new Callback<List<SetterAllPostDetails>>()
                 {
                     @Override
                     public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
                     {
-                        // progressDialog.dismiss();
-
-                        continue_request=false;
+                       continue_request=false;
                         datumList1.addAll(response.body());
                         if(datumList1.size()>0) {
                             recyclerView.setVisibility(View.VISIBLE);
@@ -331,6 +348,7 @@ public class CategoryActivity extends AppCompatActivity
             swipeContainer.setRefreshing(false);
             Log.e("ERORR", "" + e);
         }
+        progressBar.setVisibility(View.GONE);
     }
 
 
@@ -519,6 +537,26 @@ public class CategoryActivity extends AppCompatActivity
 
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
+        }
     }
 
     @Override

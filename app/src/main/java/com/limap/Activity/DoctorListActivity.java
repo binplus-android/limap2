@@ -525,4 +525,24 @@ public class DoctorListActivity extends AppCompatActivity {
             stopLocationUpdates();
         
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
+        }
+    }
 }

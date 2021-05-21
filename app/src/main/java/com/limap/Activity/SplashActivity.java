@@ -288,41 +288,44 @@ public class SplashActivity extends AppCompatActivity {
 
             case 200:
 
-                boolean locationAccepted = grantResults[0]==PackageManager.PERMISSION_GRANTED;
-                boolean c_locAccepted = grantResults[1]==PackageManager.PERMISSION_GRANTED;
-                boolean readAccepted = grantResults[2]==PackageManager.PERMISSION_GRANTED;
-                boolean writeAccepted = grantResults[3]==PackageManager.PERMISSION_GRANTED;
-                boolean cameraAccepted = grantResults[4]==PackageManager.PERMISSION_GRANTED;
-                boolean callAccepted = grantResults[5]==PackageManager.PERMISSION_GRANTED;
+                if (grantResults.length>0) {
+                    boolean locationAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+                    boolean c_locAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
+                    boolean readAccepted = grantResults[2] == PackageManager.PERMISSION_GRANTED;
+                    boolean writeAccepted = grantResults[3] == PackageManager.PERMISSION_GRANTED;
+                    boolean cameraAccepted = grantResults[4] == PackageManager.PERMISSION_GRANTED;
+                    boolean callAccepted = grantResults[5] == PackageManager.PERMISSION_GRANTED;
 
 
-                if (locationAccepted && c_locAccepted&& readAccepted&& writeAccepted && cameraAccepted && callAccepted )
-                {
+                    if (locationAccepted && c_locAccepted && readAccepted && writeAccepted && cameraAccepted && callAccepted) {
 //                   startLocationUpdates();
-                    checkPermission();
+                        checkPermission();
+                    } else {
+//                    module.showErrorSnackBar(Splash_activity.this,"Accept Permissions to Continue");
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
+                                new AlertDialog.Builder(SplashActivity.this)
+                                        .setMessage("You need to allow access to both the permissions")
+                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                                    requestPermissions(perms,
+                                                            permsRequestCode);
+                                                }
+                                            }
+                                        })
+                                        .setNegativeButton("Cancel", null)
+                                        .show();
+
+                                return;
+                            }
+                        }
+                    }
                 }
                 else
                 {
-//                    module.showErrorSnackBar(Splash_activity.this,"Accept Permissions to Continue");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                        if (shouldShowRequestPermissionRationale(ACCESS_FINE_LOCATION)) {
-                            new AlertDialog.Builder(SplashActivity.this)
-                                    .setMessage("You need to allow access to both the permissions")
-                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                                requestPermissions(perms,
-                                                        permsRequestCode);
-                                            }
-                                        }
-                                    })
-                                    .setNegativeButton("Cancel", null)
-                                    .show();
 
-                            return;
-                        }
-                    }
                 }
                 break;
 

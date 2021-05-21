@@ -108,6 +108,14 @@ public class ProfileEditActivity extends AppCompatActivity {
         toolbar     =   findViewById(R.id.toolbar);
         toolbar.setTitle("Edit Profile");
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Your code
+                finish();
+            }
+        });
 
         editTextprofileid = (EditText) findViewById(R.id.editTextprofileid);
         editTextname = (EditText) findViewById(R.id.editTextname);

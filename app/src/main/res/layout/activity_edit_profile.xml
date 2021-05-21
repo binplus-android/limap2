@@ -15,6 +15,12 @@
         app:titleTextColor="@color/colorBackground"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-    <include layout="@layout/content_edit_profile" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_height="wrap_content">
 
+
+    <include layout="@layout/content_edit_profile" />
+    </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

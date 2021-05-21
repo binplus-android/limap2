@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -50,6 +51,7 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.limap.Adapter.CategoryAddRVAdapter;
+import com.limap.Adapter.HomeAdapter;
 import com.limap.BaseController;
 import com.limap.BuildConfig;
 import com.limap.Interface.APIService;
@@ -79,7 +81,8 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerViewlayoutManager;
     private ArrayList<SetterAllPostDetails> listing;
-    private CategoryAddRVAdapter recyclerAdapter;
+//    private CategoryAddRVAdapter recyclerAdapter;
+    private HomeAdapter recyclerAdapter;
 
     //public JSONArray jsonArray;
 
@@ -122,7 +125,7 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
     private int currentFirstVisibleItem;
     private int totalItem;
     LinearLayoutManager manager ;
-
+    RelativeLayout rel_sell;
     private boolean shouldRefreshOnResume = false;
     private boolean isFirst = true;
     List<SetterAllPostDetails> datumList1;
@@ -149,7 +152,8 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
 //        dexter();
 //        startLocationUpdates();
 
-
+        lat = Double.valueOf(Pref.getInstance(MyPostAdvertisementActivity.this).getLATITUDE());
+        longi = Double.valueOf(Pref.getInstance(MyPostAdvertisementActivity.this).getLONGITUDE());
         swipeContainer = findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -159,6 +163,13 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
                 datumList1.clear();
                 readAddsWithPaging(page);
 
+            }
+        });
+        rel_sell = findViewById(R.id.rel_sell);
+        rel_sell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MyPostAdvertisementActivity.this,CheckPostActivity.class));
             }
         });
         navigation1 = (BottomNavigationView) findViewById(R.id.navigation);
@@ -204,7 +215,8 @@ public class MyPostAdvertisementActivity extends AppCompatActivity
         manager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
+//        recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
+        recyclerAdapter = new HomeAdapter( getApplicationContext(),datumList1);
         recyclerView.setAdapter(recyclerAdapter);
 
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {

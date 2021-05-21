@@ -38,4 +38,13 @@ public class SetterLogin {
     public void setMessage(String message) {
         this.message = message;
     }
+
+    @Override
+    public String toString() {
+        return "SetterLogin{" +
+                "error=" + error +
+                ", message='" + message + '\'' +
+                ", app_user_id='" + app_user_id + '\'' +
+                '}';
+    }
 }

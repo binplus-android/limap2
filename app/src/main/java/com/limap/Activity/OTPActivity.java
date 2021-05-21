@@ -93,10 +93,14 @@ public class OTPActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<SetterLogin> call, Response<SetterLogin> response) {
                     progressDialog.dismiss();
+                    Log.e("register_res",response.body()+"");
                     if (response.body().getError().equals(true)) {
 
                         Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
                         Intent target = new Intent(getApplicationContext(), OTPVerifyActivity.class);
+//                        Intent target = new Intent(getApplicationContext(), ProfileEditActivity.class);//
+//                        Pref.getInstance(getApplicationContext()).setUserId(response.body().getApp_user_id());//
+                        Pref.getInstance(getApplicationContext()).setMobileNo(mob); //temp please removew
                         target.putExtra("app_user_id", response.body().getApp_user_id());
                         target.putExtra("mobile_no", mob);
                         Log.e("OTPACTIVYT", "onResponse: "+mob+" :: "+ response.body().getApp_user_id());

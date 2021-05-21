@@ -3,7 +3,9 @@ package com.limap.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class SetterAllPostDetails {
+import java.io.Serializable;
+
+public class SetterAllPostDetails implements Serializable {
 
     @SerializedName("tbl_add_post_data_id")
     @Expose
@@ -223,4 +225,26 @@ public class SetterAllPostDetails {
     public void setVideo1(String video1) {
         this.video1 = video1;
     }  */
+
+    @Override
+    public String toString() {
+        return "SetterAllPostDetails{" +
+                "tbl_add_post_data_id='" + tbl_add_post_data_id + '\'' +
+                ", app_user_id='" + app_user_id + '\'' +
+                ", mobile_no='" + mobile_no + '\'' +
+                ", category='" + category + '\'' +
+                ", description='" + description + '\'' +
+                ", distance='" + distance + '\'' +
+                ", address='" + address + '\'' +
+                ", speciality='" + speciality + '\'' +
+                ", variety='" + variety + '\'' +
+                ", age='" + age + '\'' +
+                ", vet='" + vet + '\'' +
+                ", lastmilkhistory='" + lastmilkhistory + '\'' +
+                ", image1='" + image1 + '\'' +
+                ", image2='" + image2 + '\'' +
+                ", image3='" + image3 + '\'' +
+                ", image5='" + image5 + '\'' +
+                '}';
+    }
 }

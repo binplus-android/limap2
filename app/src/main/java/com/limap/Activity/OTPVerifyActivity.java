@@ -106,6 +106,7 @@ public class OTPVerifyActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<SetterLogin> call, Response<SetterLogin> response) {
                     progressDialog.dismiss();
+                    Log.e("verify_otp",response.body()+"");
                     if (response.body().getError().equals(true)) {
                         finish();
                         Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();

@@ -41,6 +41,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.api.ApiException;
@@ -108,7 +109,7 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 public class MainActivity extends AppCompatActivity {
     private final String TAG=MainActivity.class.getSimpleName();
     private Boolean exit = false;
-
+    RelativeLayout rel_sell ;
     private SwipeRefreshLayout swipeContainer;
     Locale myLocale;
     RecyclerView recyclerView;
@@ -181,7 +182,8 @@ public class MainActivity extends AppCompatActivity {
         //setting the title
         toolbar.setTitle(getString(R.string.app_name));
         datumList1=new ArrayList<>();
-
+        lat = Double.valueOf(Pref.getInstance(MainActivity.this).getLATITUDE());
+        longi = Double.valueOf(Pref.getInstance(MainActivity.this).getLONGITUDE());
         init();
 //        if (!checkPermission()) {
 //            requestPermissions(perms, permsRequestCode);
@@ -276,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
         buffalo = findViewById(R.id.buffalo);
         ox=findViewById(R.id.ox);
         doctor=findViewById(R.id.doctor);
+        rel_sell = findViewById(R.id.rel_sell);
         //list of history
 
 //        recyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(llm) {
@@ -352,6 +355,13 @@ public class MainActivity extends AppCompatActivity {
 //        mCircleNavigationView.setActiveCentreButtonBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorAccent));
 
 */
+        rel_sell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent b = new Intent(MainActivity.this, CheckPostActivity.class);
+                startActivity(b);
+            }
+        });
 
   BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -419,9 +429,7 @@ public class MainActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
 
             cnt++;
-            //  final ProgressDialog progressDialog = new ProgressDialog(this);
-            //  progressDialog.setMessage("Wait...");
-            //   progressDialog.show();
+
             try {
 
                 if (BaseController.isNetworkAvailable(getApplicationContext())) {
@@ -447,15 +455,14 @@ public class MainActivity extends AppCompatActivity {
 
                     APIService service = retrofit.create(APIService.class);
                     Log.e(TAG, "readAdds: "+lat+" :: "+longi +" ::"+page );
+//                    Double.parseDouble("19.7754276"),Double.parseDouble("74.0348058")
                     Call<List<SetterAllPostDetails>> call = service.homePostAll(lat,longi,String.valueOf(page));
                     call.enqueue(new Callback<List<SetterAllPostDetails>>()
                     {
                         @Override
                         public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
                         {
-                            //   progressDialog.dismiss();
-    //                        init();
-    //                        startLocationUpdates();
+
                             continue_request=false;
                             datumList1.addAll(response.body());
                             if(datumList1.size()>0) {
@@ -616,7 +623,7 @@ public class MainActivity extends AppCompatActivity {
             String state = addresses.get(0).getAdminArea();
             zip = addresses.get(0).getPostalCode();
             String country = addresses.get(0).getCountryName();
-            Log.e("map_data_splash", "getMapAddress: " + "" + address + "\n" + city + "\n" + state + "\n" + zip + "\n" + country);
+            Log.e("map_data_main", "getMapAddress: " + "" + address + "\n" + city + "\n" + state + "\n" + zip + "\n" + country);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -688,6 +695,26 @@ public class MainActivity extends AppCompatActivity {
         if (mRequestingLocationUpdates) {
             // pausing location updates
             stopLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
         }
     }
    

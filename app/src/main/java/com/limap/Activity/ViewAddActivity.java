@@ -37,6 +37,7 @@ import com.limap.Adapter.ViewPagerImageAdapter;
 import com.limap.BuildConfig;
 import com.limap.Interface.APIService;
 import com.limap.Model.APIUrl;
+import com.limap.Model.SetterAllPostDetails;
 import com.limap.Model.SetterLogin;
 import com.limap.Model.SetterResponse;
 import com.limap.Pref.Pref;
@@ -78,6 +79,7 @@ public class ViewAddActivity extends AppCompatActivity {
     ImageView floatingActionButton,imageViewCall,imageViewShare;
     private String post_id,mobile_no;
     File imagePath;
+    SetterAllPostDetails setterAllPostDetails;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,11 +115,23 @@ public class ViewAddActivity extends AppCompatActivity {
                 shareIt();
             }
         });
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Your code
+                finish();
+            }
+        });
 
         bundle = getIntent().getExtras();
         Log.d("advertise", bundle.getString("id"));
         post_id =   bundle.getString("id");
+        setterAllPostDetails = (SetterAllPostDetails) bundle.getSerializable("model");
+        Log.e("setterDetial",setterAllPostDetails.toString());
         title.setText(bundle.getString("category"));
+        toolbar.setTitle(bundle.getString("category"));
 
         if(bundle.getString("speciality").equals(""))
         {

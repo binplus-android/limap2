@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,28 +32,39 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileActivity extends AppCompatActivity {
-    private TextView profileid,name,address,city,taluka,district;
+    private TextView profileid,name,address,city,taluka,district,pname;
     private Toolbar toolbar;
     private Button editprofile;
     private BottomNavigationView navigation1;
+    RelativeLayout rel_sell;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
         toolbar     =   findViewById(R.id.toolbar);
-        toolbar.setTitle("Edit Profile");
+        toolbar.setTitle("My Profile");
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Your code
+                finish();
+            }
+        });
 
         profileid = (TextView) findViewById(R.id.profileid);
         name = (TextView) findViewById(R.id.name);
+        pname = (TextView) findViewById(R.id.profilename);
         address = (TextView) findViewById(R.id.address);
         city = (TextView) findViewById(R.id.city);
         taluka = (TextView) findViewById(R.id.taluka);
         district = (TextView) findViewById(R.id.district);
 
         editprofile =   (Button)findViewById(R.id.editprofile);
-
+        rel_sell = findViewById(R.id.rel_sell);
         navigation1 = (BottomNavigationView) findViewById(R.id.navigation);
+
         navigation1.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -91,8 +103,16 @@ public class ProfileActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.enter, R.anim.exit);
             }
         });
+        rel_sell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent b = new Intent(ProfileActivity.this, CheckPostActivity.class);
+                startActivity(b);
+            }
+        });
 
-            readProfile();
+
+        readProfile();
 
 
 
@@ -128,6 +148,7 @@ public class ProfileActivity extends AppCompatActivity {
                     if (response.body().getError().equals(true)) {
                         profileid.setText(" Mobile No : " + Pref.getInstance(getApplicationContext()).getMobileNo());
                         name.setText("Name : " +response.body().getName());
+                        pname.setText("" +response.body().getName());
                         address.setText("Address : " +response.body().getAddress());
                         city.setText("City : " + response.body().getCity());
                         taluka.setText("Taluka : " + response.body().getTaluka());

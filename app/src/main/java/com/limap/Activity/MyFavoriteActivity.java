@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -60,6 +61,7 @@ import com.karumi.dexter.listener.PermissionRequestErrorListener;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.karumi.dexter.listener.single.PermissionListener;
 import com.limap.Adapter.CategoryAddRVAdapter;
+import com.limap.Adapter.HomeAdapter;
 import com.limap.BaseController;
 import com.limap.BuildConfig;
 import com.limap.Interface.APIService;
@@ -96,7 +98,8 @@ public class MyFavoriteActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerViewlayoutManager;
     private ArrayList<SetterAllPostDetails> listing;
-    private CategoryAddRVAdapter recyclerAdapter;
+//    private CategoryAddRVAdapter recyclerAdapter;
+    private HomeAdapter recyclerAdapter;
 
     //public JSONArray jsonArray;
 
@@ -139,7 +142,7 @@ public class MyFavoriteActivity extends AppCompatActivity {
     private int currentFirstVisibleItem;
     private int totalItem;
     LinearLayoutManager manager ;
-
+    RelativeLayout rel_add;
     private boolean shouldRefreshOnResume = false;
     private boolean isFirst = true;
     List<SetterAllPostDetails> datumList1;
@@ -174,6 +177,14 @@ public class MyFavoriteActivity extends AppCompatActivity {
 
         datumList1=new ArrayList<>();
         swipeContainer = findViewById(R.id.swipeContainer);
+        rel_add = findViewById(R.id.rel_sell);
+        rel_add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent b = new Intent(MyFavoriteActivity.this, CheckPostActivity.class);
+                startActivity(b);
+            }
+        });
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -190,6 +201,8 @@ public class MyFavoriteActivity extends AppCompatActivity {
                 android.R.color.holo_orange_light,
                 android.R.color.holo_red_light);
         navigation1 = (BottomNavigationView) findViewById(R.id.navigation);
+        lat = Double.valueOf(Pref.getInstance(MyFavoriteActivity.this).getLATITUDE());
+        longi = Double.valueOf(Pref.getInstance(MyFavoriteActivity.this).getLONGITUDE());
         navigation1.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -226,7 +239,8 @@ public class MyFavoriteActivity extends AppCompatActivity {
         manager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(manager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
+//        recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
+        recyclerAdapter = new HomeAdapter( getApplicationContext(),datumList1);
         recyclerView.setAdapter(recyclerAdapter);
         recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -527,17 +541,31 @@ public class MyFavoriteActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-    }
-
-    @Override
     protected void onPause() {
         super.onPause();
         if (mRequestingLocationUpdates) {
             // pausing location updates
             stopLocationUpdates();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!checkPermission()) {
+            requestPermissions(perms, permsRequestCode);
+        } else {
+            checkLocation();
         }
     }
   

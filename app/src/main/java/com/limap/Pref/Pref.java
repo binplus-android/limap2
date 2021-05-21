@@ -68,7 +68,7 @@ public class Pref {
     {
         editor.putString(LATITUDE, lat);
         editor.putString(LONGITUDE, longi);
-        editor.putString(MOBILE_NO, pin);
+        editor.putString(PINCODE, pin);
                 editor.commit();
     }
 

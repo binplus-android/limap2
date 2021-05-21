@@ -91,6 +91,7 @@ public interface APIService {
     );
 
 
+
     @FormUrlEncoded
     @POST("api_get_all_post.php")
     Call<List<SetterAllPostDetails>> homePostAll(

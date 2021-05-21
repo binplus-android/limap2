@@ -14,7 +14,11 @@
             app:titleTextColor="@color/colorWhite"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
 
-    <include layout="@layout/content_post_add" />
+        android:layout_marginTop="?attr/actionBarSize">
+        <include layout="@layout/content_post_add" /></RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

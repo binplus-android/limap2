@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.limap.Adapter.CategoryAddRVAdapter;
+import com.limap.Adapter.HomeAdapter;
 import com.limap.BaseController;
 import com.limap.Interface.APIService;
 import com.limap.Model.APIUrl;
@@ -39,7 +40,8 @@ public class SearchDetailsActivity extends AppCompatActivity
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager recyclerViewlayoutManager;
     private ArrayList<SetterAllPostDetails> listing;
-    private CategoryAddRVAdapter recyclerAdapter;
+//    private CategoryAddRVAdapter recyclerAdapter;
+    private HomeAdapter recyclerAdapter;
 
     //public JSONArray jsonArray;
 
@@ -156,7 +158,8 @@ public class SearchDetailsActivity extends AppCompatActivity
                         List<SetterAllPostDetails> datumList1 = response.body();
                         if(datumList1.size()>0) {
                             recyclerView.setVisibility(View.VISIBLE);
-                            recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
+//                            recyclerAdapter = new CategoryAddRVAdapter(datumList1, getApplicationContext());
+                            recyclerAdapter = new HomeAdapter( getApplicationContext(),datumList1);
                             RecyclerView.LayoutManager recyce = new LinearLayoutManager(getApplicationContext());
 
                             recyclerView.setLayoutManager(recyce);
