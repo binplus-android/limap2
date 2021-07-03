@@ -41,9 +41,14 @@ dependencies {
     implementation 'com.karumi:dexter:4.2.0'
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
-    implementation 'com.google.android.gms:play-services-vision:19.0.0'
-    implementation 'com.google.android.gms:play-services-location:17.0.0'
-    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+//    implementation 'com.google.android.gms:play-services-vision:19.0.0'
+//    implementation 'com.google.android.gms:play-services-location:17.0.0'
+//    implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
+
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
+    implementation 'com.google.android.gms:play-services-vision:20.1.3'
 
     // JSON parsing, serialize-deserialize
     implementation 'com.google.code.gson:gson:2.8.6'
