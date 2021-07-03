@@ -19,6 +19,11 @@ public class SetterAllPostDetails implements Serializable {
     @Expose
     private String mobile_no;
 
+    @SerializedName("seller_name")
+    @Expose
+    private String seller_name;
+
+
     @SerializedName("category")
     @Expose
     private String category;
@@ -192,7 +197,14 @@ public class SetterAllPostDetails implements Serializable {
         this.image3 = image3;
     }
 
-  /*  public String getImage4() {
+    public String getSeller_name() {
+        return seller_name;
+    }
+
+    public void setSeller_name(String seller_name) {
+        this.seller_name = seller_name;
+    }
+    /*  public String getImage4() {
         return image4;
     }
 
@@ -245,6 +257,7 @@ public class SetterAllPostDetails implements Serializable {
                 ", image2='" + image2 + '\'' +
                 ", image3='" + image3 + '\'' +
                 ", image5='" + image5 + '\'' +
+                ", seller_name='" + seller_name + '\''+
                 '}';
     }
 }

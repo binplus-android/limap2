@@ -462,6 +462,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Call<List<SetterAllPostDetails>> call, Response<List<SetterAllPostDetails>> response)
                         {
+                            Log.e("defrgthyuj",response.body().toString());
 
                             continue_request=false;
                             datumList1.addAll(response.body());

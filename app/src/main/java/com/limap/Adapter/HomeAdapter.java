@@ -52,7 +52,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         if(!details.getCategory().equals("ox")) {
             vet =  " ( " + details.getVariety() + " )";
         }
-        holder.tv_title.setText(details.getCategory()+vet);
+        holder.tv_title.setText(details.getCategory()+vet+" - "+details.getSeller_name());
         float fKm=Float.parseFloat(details.getDistance());
         float f=Math.round(fKm);
         holder.tv_distance.setText(String.valueOf(f)+"km ");
