@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "1028128723950",
+    "project_id": "limap-6a182",
+    "storage_bucket": "limap-6a182.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028128723950:android:95ee833278f86f3e9974ff",
+        "android_client_info": {
+          "package_name": "com.limap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028128723950-e9r9grdq88jjmt55qg4hkti008fbjogb.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.limap",
+            "certificate_hash": "133253e02c13d3d8cb46dd7f875ee12c5a920660"
+          }
+        },
+        {
+          "client_id": "1028128723950-mci5etep6350e0h7o6821k9367q77r77.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB49UQAliapNJhffW7jpZpGT2KOVMzNpSg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028128723950-mci5etep6350e0h7o6821k9367q77r77.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

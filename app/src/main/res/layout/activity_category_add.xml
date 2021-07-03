@@ -13,17 +13,22 @@
         android:background="?attr/colorPrimary"
         app:titleTextColor="@color/colorBackground"
         app:popupTheme="@style/AppTheme.PopupOverlay" />
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipeContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/toolbar">
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/navigation"
-        android:layout_below="@+id/toolbar"
-        >
-
-
-
+        android:layout_above="@+id/navigation">
     <include layout="@layout/content_category" />
     </RelativeLayout>
+            </androidx.core.widget.NestedScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
         android:layout_width="match_parent"

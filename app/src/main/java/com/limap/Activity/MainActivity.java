@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
             public void onRefresh() {
                 page=0;
                 datumList1.clear();
+                recyclerAdapter.notifyDataSetChanged();
                 readAddsWithPaging(page);
 
             }
