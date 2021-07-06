@@ -505,7 +505,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Connect to network and refresh", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
-                swipeContainer.setRefreshing(false);
+//                swipeContainer.setRefreshing(false);
                 Log.e("ERORR", "" + e);
             }
             progressBar.setVisibility(View.GONE);
