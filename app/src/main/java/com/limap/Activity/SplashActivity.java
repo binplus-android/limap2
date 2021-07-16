@@ -88,7 +88,7 @@ public class SplashActivity extends AppCompatActivity {
     private String mLastUpdateTime;
     int permsRequestCode = 200 ;
     String[] perms = {"android.permission.ACCESS_FINE_LOCATION", "android.permission.ACCESS_COARSE_LOCATION", "android.permission.WRITE_EXTERNAL_STORAGE",
-            "android.permission.READ_EXTERNAL_STORAGE", "android.permission.CAMERA", "android.permission.CALL_PHONE","android.permission.SEND_SMS","android.permission.RECEIVE_SMS"};
+            "android.permission.READ_EXTERNAL_STORAGE", "android.permission.CAMERA", "android.permission.CALL_PHONE"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -278,11 +278,11 @@ public class SplashActivity extends AppCompatActivity {
         int r3 = ContextCompat.checkSelfPermission(getApplicationContext(), CALL_PHONE);
         int r4 = ContextCompat.checkSelfPermission(getApplicationContext(), READ_EXTERNAL_STORAGE);
         int r5 = ContextCompat.checkSelfPermission(getApplicationContext(), WRITE_EXTERNAL_STORAGE);
-        int r6 = ContextCompat.checkSelfPermission(getApplicationContext(), SEND_SMS);
-        int r7 = ContextCompat.checkSelfPermission(getApplicationContext(), RECEIVE_SMS);
+//        int r6 = ContextCompat.checkSelfPermission(getApplicationContext(), SEND_SMS);
+//        int r7 = ContextCompat.checkSelfPermission(getApplicationContext(), RECEIVE_SMS);
 
         return r== PackageManager.PERMISSION_GRANTED && r1 == PackageManager.PERMISSION_GRANTED && r2== PackageManager.PERMISSION_GRANTED
-                && r3 == PackageManager.PERMISSION_GRANTED && r4 == PackageManager.PERMISSION_GRANTED && r5 ==PackageManager.PERMISSION_GRANTED && r6 == PackageManager.PERMISSION_GRANTED && r7 == PackageManager.PERMISSION_GRANTED;
+                && r3 == PackageManager.PERMISSION_GRANTED && r4 == PackageManager.PERMISSION_GRANTED && r5 ==PackageManager.PERMISSION_GRANTED;
     }
 
 
@@ -300,11 +300,11 @@ public class SplashActivity extends AppCompatActivity {
                     boolean writeAccepted = grantResults[3] == PackageManager.PERMISSION_GRANTED;
                     boolean cameraAccepted = grantResults[4] == PackageManager.PERMISSION_GRANTED;
                     boolean callAccepted = grantResults[5] == PackageManager.PERMISSION_GRANTED;
-                    boolean smsSend = grantResults[6] == PackageManager.PERMISSION_GRANTED;
-                    boolean smsReceive = grantResults[7] == PackageManager.PERMISSION_GRANTED;
+//                    boolean smsSend = grantResults[6] == PackageManager.PERMISSION_GRANTED;
+//                    boolean smsReceive = grantResults[7] == PackageManager.PERMISSION_GRANTED;
 
 
-                    if (locationAccepted && c_locAccepted && readAccepted && writeAccepted && cameraAccepted && callAccepted && smsSend && smsReceive) {
+                    if (locationAccepted && c_locAccepted && readAccepted && writeAccepted && cameraAccepted && callAccepted) {
 //                   startLocationUpdates();
                         checkPermission();
                     } else {

@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.limap">
 
-    <uses-permission android:name="android.permission.SEND_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+<!--    <uses-permission android:name="android.permission.SEND_SMS" />-->
+<!--    <uses-permission android:name="android.permission.RECEIVE_SMS" />-->
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -161,7 +161,8 @@
         <receiver
             android:name=".Utils.SmsBroadcastReceiver"
             android:enabled="true"
-            android:exported="true" />
+            android:exported="true"
+            />
     </application>
 
 </manifest>

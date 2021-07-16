@@ -79,7 +79,12 @@ public class OTPVerifyActivity extends AppCompatActivity {
                     editTextOTP.requestFocus();
                     showAlert("Please enter OTP which is send to your mobile no.");
                 } else {
-                    verifyOTP();
+                    if (editTextOTP.getText().toString().length()!=6)
+                    {
+                        showAlert("OTP is too short");
+                    }else {
+                        verifyOTP();
+                    }
                 }
             }
         });
@@ -106,18 +111,22 @@ public class OTPVerifyActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Call<SetterLogin> call, Response<SetterLogin> response) {
                     progressDialog.dismiss();
-                    Log.e("verify_otp",response.body()+"");
-                    if (response.body().getError().equals(true)) {
-                        finish();
-                        Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
-                        Pref.getInstance(getApplicationContext()).setUserId(response.body().getApp_user_id());
-                        Pref.getInstance(getApplicationContext()).setMobileNo(mobile_no);
+                    Log.e("verify_otp", response.body() + "");
+                    if (response.body() != null){
+                        if (response.body().getError().equals(true)) {
+                            finish();
+                            Toast.makeText(getApplicationContext(), response.body().getMessage(), Toast.LENGTH_LONG).show();
+                            Pref.getInstance(getApplicationContext()).setUserId(response.body().getApp_user_id());
+                            Pref.getInstance(getApplicationContext()).setMobileNo(mobile_no);
 
-                        Intent target = new Intent(getApplicationContext(), ProfileEditActivity.class);
-                        startActivity(target);
-                        overridePendingTransition(R.anim.enter, R.anim.exit);
-                    } else {
-                        Toast.makeText(getApplicationContext(), "Invalid contact number", Toast.LENGTH_LONG).show();
+                            Intent target = new Intent(getApplicationContext(), ProfileEditActivity.class);
+                            startActivity(target);
+                            overridePendingTransition(R.anim.enter, R.anim.exit);
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Invalid contact number", Toast.LENGTH_LONG).show();
+                        }
+                }else {
+                        showAlert("Enter valid OTP");
                     }
                 }
 
